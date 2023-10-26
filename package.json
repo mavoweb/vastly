@@ -1,0 +1,27 @@
+{
+  "name": "vastly",
+  "version": "0.0.1",
+  "description": "Everything you need to support a custom expression language",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "open test/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mavoweb/vastly.git"
+  },
+  "keywords": [
+    "AST",
+    "parsing",
+    "expressions"
+  ],
+  "author": "Lea Verou",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mavoweb/vastly/issues"
+  },
+  "homepage": "https://github.com/mavoweb/vastly#readme"
+}
