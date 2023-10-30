@@ -1,5 +1,3 @@
-import closest from "./closest.js";
-
 /**
  * Functions to serialize each specific node type.
  * Can be imported and overwritten by calling code.
@@ -37,7 +35,7 @@ export const transformations = {};
  * @returns
  */
 export default function serialize (node, parent) {
-	if (typeof node === "string") {
+	if (!node || typeof node === "string") {
 		return node; // already serialized
 	}
 
@@ -45,7 +43,7 @@ export default function serialize (node, parent) {
 		node.parent = parent;
 	}
 
-	var ret = _.transformations[node.type]?.(node, parent);
+	let ret = transformations[node.type]?.(node, parent) ?? node;
 
 	if (typeof ret == "object" && ret?.type) {
 		node = ret;
@@ -54,9 +52,9 @@ export default function serialize (node, parent) {
 		return ret;
 	}
 
-	if (!node.type || !_.serializers[node.type]) {
+	if (!node.type || !serializers[node.type]) {
 		throw new TypeError("Cannot understand this expression at all 😔");
 	}
 
-	return _.serializers[node.type](node, parent);
+	return serializers[node.type](node, parent);
 }
