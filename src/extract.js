@@ -4,59 +4,52 @@
  * @returns {object} an object with the list of variables and function
  *  in the form {variables: [...], functions: [...]}
  */
-function getVariablesAndFunctions(node) {
+export default function extract(node) {
     switch(node.type) {
         case "Literal":
             return {variables: [], functions: []};
         case "UnaryExpression":
-            return getVariablesAndFunctions(node.argument);
+            return extract(node.argument);
         case "BinaryExpression":
-            let right = getVariablesAndFunctions(node.right);
+            let right = extract(node.right);
             // handles group(key: value)
             if (node.operator === ":") {
                 return right;
             }
-            let left = getVariablesAndFunctions(node.left);
+            let left = extract(node.left);
             return combineResults(left, right);
         case "LogicalExpression":
-            left = getVariablesAndFunctions(node.left);
-            right = getVariablesAndFunctions(node.right);
+            left = extract(node.left);
+            right = extract(node.right);
             return combineResults(left, right);
         case "ConditionalExpression":
-            const test = getVariablesAndFunctions(node.test);
-            const consequent = getVariablesAndFunctions(node.consequent);
-            const alternate = getVariablesAndFunctions(node.alternate);
+            const test = extract(node.test);
+            const consequent = extract(node.consequent);
+            const alternate = extract(node.alternate);
             return combineResults(test, consequent, alternate);
         case "Compound":
-            const body = node.body.map(getVariablesAndFunctions);
+            const body = node.body.map(extract);
             return combineResults(...body);
         case "ArrayExpression":
-            const elements = node.elements.map(getVariablesAndFunctions);
+            const elements = node.elements.map(extract);
             return combineResults(...elements);
         case "CallExpression":
             let result = {
                 variables: [],
                 functions: [node]
             }
-            const args = node.arguments.map(getVariablesAndFunctions);
+            const args = node.arguments.map(extract);
             result = combineResults(result, ...args);
             // So we don't add identifiers like "if"
             if (node.callee.type !== "Identifier") {
-                result = combineResults(result, getVariablesAndFunctions(node.callee));
+                result = combineResults(result, extract(node.callee));
             }
             return result;
         case "MemberExpression":
-            const object = getVariablesAndFunctions(node.object);
+            const objectChildren = extract(node.object);
             // Only recurse on the property if it is not an identifier
-            const property = node.property.type === "Identifier" ? {variables: [], functions: []} : getVariablesAndFunctions(node.property);
-            // If the object is also a member expression, return this one (the top most one)
-            // along with the children of the properties
-            if (object.variables[0] === node.object) {
-                property.variables.unshift(node);
-                object.variables.shift();
-                return combineResults(property, object);
-            }
-            return combineResults(property, object);
+            const propertyChildren = node.property.type === "Identifier" ? {variables: [], functions: []} : extract(node.property);
+            return combineResults(objectChildren, propertyChildren);
         // Rest of the cases contain a single variable
         case "ThisExpression":
         case "Identifier":
