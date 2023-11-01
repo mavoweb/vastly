@@ -1,0 +1,29 @@
+---
+layout: null
+pagination:
+  data: tests
+  size: 1
+  alias: filename
+permalink: "/test/{{ filename }}.html"
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>{{ filename }}</title>
+<link rel="stylesheet" href="{{ htest }}/htest.css" crossorigin />
+<link rel="stylesheet" href="../node_modules/htest.dev/htest.css" crossorigin />
+
+</head>
+<body>
+
+<script type="module">
+import "{{ htest }}/htest.js";
+import render from "{{ htest }}/src/js/render.js";
+import test from './{{ filename }}.js';
+render(test);
+</script>
+
+</body>
+</html>

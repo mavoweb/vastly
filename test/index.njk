@@ -1,0 +1,28 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="en" class="index">
+<head>
+
+<meta charset="UTF-8">
+<title>vASTLy Tests</title>
+
+<link rel="stylesheet" href="{{ htest }}/htest.css" crossorigin />
+<script src="{{ htest }}/htest.js" type="module" crossorigin></script>
+
+</head>
+<body>
+
+<section>
+	<h1>vASTLy Tests</h1>
+
+	<ul id="tests">
+		{% for test in tests -%}
+		<li><a href='{{ test }}.html'>{{ test }}</a></li>
+		{%- endfor %}
+	</ul>
+</section>
+
+</body>
+</html>
