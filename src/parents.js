@@ -8,7 +8,7 @@ import walk from "./src/walk.js";
  * @param {object} [options]
  * @param {boolean} [options.force] Overwrite existing `parent` properties
  */
-export default function setParents (node, options ) {
+export function setAll (node, options ) {
 	walk(node, (node, property, parent) => {
 		let ret = setParent(node, parent, options);
 
@@ -19,7 +19,15 @@ export default function setParents (node, options ) {
 	});
 }
 
-export function setParent (node, parent, { force } = {}) {
+/**
+ * Set the `parent` property on a node.
+ * By default it will skip nodes that already have a `parent` property, but you can set force = true to prevent that.
+ * @param {object} node
+ * @param {object} parent
+ * @param {object} [options]
+ * @param {boolean} [options.force] Allow overwriting
+ */
+export function set (node, parent, { force } = {}) {
 	if (!force && "parent" in node) {
 		// We assume that if the node already has a parent, its subtree will also have parents
 		return false;
