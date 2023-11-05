@@ -1,4 +1,4 @@
-import walk from "./src/walk.js";
+import walk from "./walk.js";
 
 /**
  * Set properties on each node pointing to its parent node.
@@ -27,7 +27,7 @@ export function setAll (node, options ) {
  * @param {object} [options]
  * @param {boolean} [options.force] Allow overwriting
  */
-export function set (node, parent, { force } = {}) {
+export function setParent(node, parent, { force } = {}) {
 	if (!force && "parent" in node) {
 		// We assume that if the node already has a parent, its subtree will also have parents
 		return false;

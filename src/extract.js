@@ -1,74 +1,54 @@
+import {setAll} from "./parents.js";
+
 /**
- * Recursively traverse the AST and return all variables and functions
+ * Recursively traverse the AST and return all top-level identifiers
  * @param {object} node  
- * @returns {object} an object with the list of variables and function
- *  in the form {variables: [...], functions: [...]}
+ * @param {object} [options]
+ * @param {function(object)} [options.filter] A function that returns true if the node should be included
+ * @param {boolean} [options.addParents] If true, add a parent property to each node
+ * @returns a list of all top-level identifiers
  */
-export default function extract(node) {
-    switch(node.type) {
-        case "Literal":
-            return {variables: [], functions: []};
-        case "UnaryExpression":
-            return extract(node.argument);
-        case "BinaryExpression":
-            let right = extract(node.right);
-            // handles group(key: value)
-            if (node.operator === ":") {
-                return right;
-            }
-            let left = extract(node.left);
-            return combineResults(left, right);
-        case "LogicalExpression":
-            left = extract(node.left);
-            right = extract(node.right);
-            return combineResults(left, right);
-        case "ConditionalExpression":
-            const test = extract(node.test);
-            const consequent = extract(node.consequent);
-            const alternate = extract(node.alternate);
-            return combineResults(test, consequent, alternate);
-        case "Compound":
-            const body = node.body.map(extract);
-            return combineResults(...body);
-        case "ArrayExpression":
-            const elements = node.elements.map(extract);
-            return combineResults(...elements);
-        case "CallExpression":
-            let result = {
-                variables: [],
-                functions: [node]
-            }
-            const args = node.arguments.map(extract);
-            result = combineResults(result, ...args);
-            // So we don't add identifiers like "if"
-            if (node.callee.type !== "Identifier") {
-                result = combineResults(result, extract(node.callee));
-            }
-            return result;
-        case "MemberExpression":
-            const objectChildren = extract(node.object);
-            // Only recurse on the property if it is not an identifier
-            const propertyChildren = node.property.type === "Identifier" ? {variables: [], functions: []} : extract(node.property);
-            return combineResults(objectChildren, propertyChildren);
-        // Rest of the cases contain a single variable
-        case "ThisExpression":
-        case "Identifier":
-        default:
-            return {
-                variables: [node],
-                functions: []
-            };
+export default function extractIdentifiers(node, {filter, addParents} = {}) {
+    if (addParents) {
+        setAll(node);
     }
+
+    function _extractIdentifiers(node) {
+        switch(node.type) {
+            case "Literal":
+                return []
+            case "UnaryExpression":
+                return _extractIdentifiers(node.argument);
+            case "BinaryExpression":
+            case "LogicalExpression":
+                const {left, right} = node;
+                return [left, right].flatMap(_extractIdentifiers);
+            case "ConditionalExpression":
+                const {test, consequent, alternate} = node;
+                return [test, consequent, alternate].flatMap(_extractIdentifiers);
+            case "Compound":
+                return node.body.flatMap(_extractIdentifiers);
+            case "ArrayExpression":
+                return node.elements.flatMap(_extractIdentifiers);
+            case "CallExpression":
+                return [node.callee, ...node.arguments].flatMap(_extractIdentifiers);
+            case "MemberExpression":
+                const {object, property} = node;
+                const propertyChildren = property.type === "Identifier" ? [] : _extractIdentifiers(property);
+                return _extractIdentifiers(object).concat(propertyChildren);
+            // Rest of the cases contain a single variable
+            // Also check for filter condition
+            case "ThisExpression":
+            case "Identifier":
+            default:
+                const result = [];
+                if (!filter || (filter && filter(node))) {
+                    result.push(node);
+                }
+                return result;
+        }
+    }
+
+    return _extractIdentifiers(node);
 }
 
-function combineResults(...results) {
-    return results.reduce((acc, cur) => {
-        return {
-            variables: acc.variables.concat(cur.variables),
-            functions: acc.functions.concat(cur.functions)
-        };
-    }, {
-        variables: [],
-        functions: []
-    });
-}
