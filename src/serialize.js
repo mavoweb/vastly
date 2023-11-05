@@ -13,7 +13,7 @@ export const serializers = {
 		return `${callee}(${args.join(", ")})`;
 	},
 	"ConditionalExpression": node => `${serialize(node.test, node)} ? ${serialize(node.consequent, node)} : ${serialize(node.alternate, node)}`,
-	"MemberExpression": (node, parent) => {
+	"MemberExpression": node => {
 		let property = node.computed? `[${serialize(node.property, node)}]` : `.${node.property.name}`;
 		let object = serialize(node.object, node);
 		return `${object}${property}`;
@@ -31,19 +31,14 @@ export const transformations = {};
 /**
  * Recursively serialize an AST node into a JS expression
  * @param {*} node
- * @param {*} parent
  * @returns
  */
-export default function serialize (node, parent) {
+export default function serialize (node) {
 	if (!node || typeof node === "string") {
 		return node; // already serialized
 	}
 
-	if (parent) {
-		node.parent = parent;
-	}
-
-	let ret = transformations[node.type]?.(node, parent) ?? node;
+	let ret = transformations[node.type]?.(node) ?? node;
 
 	if (typeof ret == "object" && ret?.type) {
 		node = ret;
@@ -56,5 +51,5 @@ export default function serialize (node, parent) {
 		throw new TypeError("Cannot understand this expression at all 😔");
 	}
 
-	return serializers[node.type](node, parent);
+	return serializers[node.type](node);
 }
