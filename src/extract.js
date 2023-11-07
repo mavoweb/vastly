@@ -4,7 +4,7 @@ import {setAll} from "./parents.js";
  * Recursively traverse the AST and return all top-level identifiers
  * @param {object} node  
  * @param {object} [options]
- * @param {function(object)} [options.filter] A function that returns true if the node should be included
+ * @param {function(object): boolean} [options.filter] A function that returns true if the node should be included
  * @param {boolean} [options.addParents] If true, add a parent property to each node
  * @returns a list of all top-level identifiers
  */
@@ -34,6 +34,8 @@ export default function extractIdentifiers(node, {filter, addParents} = {}) {
                 return [node.callee, ...node.arguments].flatMap(_extractIdentifiers);
             case "MemberExpression":
                 const {object, property} = node;
+                // only explore the property if it's a complex expression that might
+                // have more identifiers
                 const propertyChildren = property.type === "Identifier" ? [] : _extractIdentifiers(property);
                 return _extractIdentifiers(object).concat(propertyChildren);
             // Rest of the cases contain a single variable

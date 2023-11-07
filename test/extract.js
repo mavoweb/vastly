@@ -127,5 +127,26 @@ export default {
 			args: ["if(flexDirection == \"row\" || flexDirection == \"row-reverse\", \"horizontal\", \"vertical\")"],
 			expect: ["if", "flexDirection", "flexDirection"]
 		},
+		// Some tests with options passed in
+		{
+			args: ["!tagFilter || count(tag == tagFilter) > 0", {addParents: true, filter: (node) => node.parent.callee === node}],
+			expect: ["count"]
+		},
+		{
+			args: ["if(featured, 'featured')", {addParents: true, filter: (node) => node.parent.callee !== node}],
+			expect: ["featured"]
+		},
+		{
+			args: ["if(starts(url, 'http'), 'external')", {addParents: true, filter: (node) => node.parent.callee === node}],
+			expect: ["if", "starts"]
+		},
+		{
+			args: ["replace(join(pathsummary, ' '), ' ', ' ', 10)", {addParents: true, filter: (node) => node.parent.callee !== node}],
+			expect: ["pathsummary"]
+		},
+		{
+			args: ["type == c || type == s || type == q", {addParents: true, filter: (node) => node.parent.callee === node}],
+			expect: []
+		},
 	]
 }
