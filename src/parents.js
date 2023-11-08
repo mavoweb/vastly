@@ -1,4 +1,4 @@
-import walk from "./src/walk.js";
+import walk from "./walk.js";
 
 /**
  * Set properties on each node pointing to its parent node.
