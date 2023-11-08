@@ -1,12 +1,12 @@
-import jsep from "../node_modules/jsep/dist/jsep.min.js";
-import extractIdentifiers from "../src/extract.js";
+import jsep from "jsep/dist/jsep.min.js";
+import variables from "../src/variables.js";
 import serialize from "../src/serialize.js";
 
 export default {
-	name: "extractIdentifiers()",
+	name: "variables()",
 	run (expression, options = {}) {
 		const ast = jsep(expression);
-        let identifiers = extractIdentifiers(ast, options);
+        let identifiers = variables(ast, options);
         identifiers = identifiers.map(serialize);
 		return identifiers;
 	},

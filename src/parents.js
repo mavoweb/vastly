@@ -10,7 +10,7 @@ import walk from "./walk.js";
  */
 export function setAll (node, options ) {
 	walk(node, (node, property, parent) => {
-		let ret = setParent(node, parent, options);
+		let ret = set(node, parent, options);
 
 		if (ret === false) {
 			// We assume that if the node already has a parent, its subtree will also have parents
@@ -27,7 +27,7 @@ export function setAll (node, options ) {
  * @param {object} [options]
  * @param {boolean} [options.force] Allow overwriting
  */
-export function setParent(node, parent, { force } = {}) {
+export function set(node, parent, { force } = {}) {
 	if (!force && "parent" in node) {
 		// We assume that if the node already has a parent, its subtree will also have parents
 		return false;
