@@ -1,4 +1,4 @@
-import jsep from "jsep/dist/jsep.min.js";
+import jsep from "../node_modules/jsep/dist/jsep.min.js";
 import variables from "../src/variables.js";
 import serialize from "../src/serialize.js";
 

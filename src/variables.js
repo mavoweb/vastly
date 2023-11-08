@@ -1,4 +1,4 @@
-import parents from "./parents.js";
+import * as parents from "./parents.js";
 
 /**
  * Recursively traverse the AST and return all top-level identifiers
