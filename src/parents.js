@@ -10,7 +10,7 @@ import walk from "./src/walk.js";
  */
 export function setAll (node, options ) {
 	walk(node, (node, property, parent) => {
-		let ret = setParent(node, parent, options);
+		let ret = set(node, parent, options);
 
 		if (ret === false) {
 			// We assume that if the node already has a parent, its subtree will also have parents
