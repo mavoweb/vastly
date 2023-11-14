@@ -15,7 +15,7 @@ export default function walk (node, callback, o) {
 }
 
 function _walk(node, callback, o = {}, property, parent) {
-	let ignored = o.ignore && matches(node, o.ignore);
+	let ignored = o.ignore && matches(node, o.except);
 
 	if (!ignored && matches(node, o.only)) {
 		let ret = callback(node, property, parent);
