@@ -29,7 +29,6 @@ export default function variables(node) {
 			const propertyChildren = property.type === "Identifier" ? [] : variables(property);
 			return variables(object).concat(propertyChildren);
 		// Rest of the cases contain a single variable
-		// Also check for filter condition
 		case "ThisExpression":
 		case "Identifier":
 		default:

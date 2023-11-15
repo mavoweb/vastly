@@ -6,8 +6,8 @@ export default {
 	name: "variables()",
 	run (expression) {
 		const ast = jsep(expression);
-        let identifiers = variables(ast);
-        identifiers = identifiers.map(serialize);
+		let identifiers = variables(ast);
+		identifiers = identifiers.map(serialize);
 		return identifiers;
 	},
 	tests: [
