@@ -126,6 +126,22 @@ export default {
 		{
 			args: ["if(flexDirection == \"row\" || flexDirection == \"row-reverse\", \"horizontal\", \"vertical\")"],
 			expect: ["if", "flexDirection", "flexDirection"]
+		},
+		{
+			args: ["func1(arg1, arg2) + func2(arg3)"],
+			expect: ["func1", "arg1", "arg2", "func2", "arg3"]
+		},
+		{
+			args: ["condition ? trueVal : falseVal"],
+			expect: ["condition", "trueVal", "falseVal"]
+		},
+		{
+			args: ["(a & b) | (c ^ d)"],
+			expect: ["a", "b", "c", "d"]
+		},
+		{
+			args: ["(x && y) || (z || !w)"],
+			expect: ["x", "y", "z", "w"]
 		}
 	]
 }
