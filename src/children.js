@@ -8,7 +8,7 @@ export default function children(node) {
 		return node.flatMap(node => children(node));
 	}
 
-	return childProperties.filter(property => node[property]).flatMap(property => node[property]);
+	return childProperties.flatMap(property => node[property] ?? []);
 }
 
 /**
