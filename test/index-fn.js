@@ -2,6 +2,7 @@ let tests = await Promise.all([
 	"evaluate",
 	"walk",
 	"find",
+	"variables"
 ].map(name => import(`./${name}.js`).then(module => module.default)));
 
 
