@@ -10,7 +10,7 @@
     "build": "npm run build:html",
     "watch:html": "npx @11ty/eleventy --config=_build/.eleventy.cjs --watch",
     "watch": "npm run watch:html",
-    "build:docs": "echo '{\"compilerOptions\": {\"allowJs\": true}, \"include\": [\"src/**/*.js\"]}' > tsconfig.json; npx typedoc --out docs src/; rm tsconfig.json"
+    "build:docs": "npx typedoc --out docs src/"
   },
   "repository": {
     "type": "git",
