@@ -23,10 +23,12 @@ export default function variables(node) {
 		case "CallExpression":
 			return [node.callee, ...node.arguments].flatMap(variables);
 		case "MemberExpression":
-			const {object, property} = node;
+			const {object, property, computed} = node;
 			// only explore the property if it's a complex expression that might
 			// have more identifiers
-			const propertyChildren = property.type === "Identifier" ? [] : variables(property);
+			// computed is true if the MemberExpression is of the form a[b] (need to explore further)
+			// computed is false if the MemberExpression is of the form a.b (don't need to explore further)
+			const propertyChildren = computed ? variables(property) : [];
 			return variables(object).concat(propertyChildren);
 		// Rest of the cases contain a single variable
 		case "ThisExpression":

@@ -142,6 +142,31 @@ export default {
 		{
 			args: ["(x && y) || (z || !w)"],
 			expect: ["x", "y", "z", "w"]
+		},
+		// member expressions
+		{
+			args: ["foo['bar']"],
+			expect: ["foo"]
+		},
+		{
+			args: ["foo.bar.baz"],
+			expect: ["foo"]
+		},
+		{
+			args: ["foo[bar].baz"],
+			expect: ["foo", "bar"]
+		},
+		{
+			args: ["foo[bar.baz]"],
+			expect: ["foo", "bar"]
+		},
+		{
+			args: ["foo[bar[baz]]"],
+			expect: ["foo", "bar", "baz"],
+		},
+		{
+			args: ["foo['bar'].baz[qux]"],
+			expect: ["foo", "qux"]
 		}
 	]
 }
