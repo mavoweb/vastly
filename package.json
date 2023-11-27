@@ -11,7 +11,7 @@
     "watch:html": "npx @11ty/eleventy --config=_build/.eleventy.cjs --watch",
     "watch": "npm run watch:html",
     "build:docs": "npx typedoc --out docs src/",
-    "build:js": "rollup -c"
+    "build:js": "npx rollup -c"
   },
   "repository": {
     "type": "git",
@@ -30,7 +30,6 @@
   "homepage": "https://github.com/mavoweb/vastly#readme",
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",
-    "@rollup/plugin-babel": "^6.0.4",
     "eleventy-plugin-toc": "^1.1.5",
     "glob": "^10.3.10",
     "htest.dev": "^0.0.4",
