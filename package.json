@@ -11,7 +11,7 @@
     "watch:html": "npx @11ty/eleventy --config=_build/.eleventy.cjs --watch",
     "watch": "npm run watch:html",
     "build:docs": "npx typedoc --out docs src/",
-    "build:js": "npx rollup -c"
+    "build:js": "rollup -c"
   },
   "repository": {
     "type": "git",
