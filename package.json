@@ -7,11 +7,11 @@
   "scripts": {
     "test": "node test/index.js",
     "build:html": "npx @11ty/eleventy --config=_build/.eleventy.cjs",
-    "build": "npm run build:html",
+    "build": "npm run build:html && npm run build:js",
     "watch:html": "npx @11ty/eleventy --config=_build/.eleventy.cjs --watch",
     "watch": "npm run watch:html",
     "build:docs": "npx typedoc --out docs src/",
-    "build:rollup": "rollup -c"
+    "build:js": "rollup -c"
   },
   "repository": {
     "type": "git",
