@@ -9,7 +9,7 @@ function bundle(format, filenameAddition = "") {
 	}
 
 	return {
-		file: `src/${filename}.js`,
+		file: `dist/${filename}.js`,
 		name: IIFE_NAME,
 		format,
 		sourcemap: format !== "esm"
