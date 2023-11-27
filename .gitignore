@@ -6,3 +6,6 @@ dist
 **/*.html
 !test/index.html
 test/index.json
+
+# built js
+src/vastly.*
