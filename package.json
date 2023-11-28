@@ -2,8 +2,9 @@
   "name": "vastly",
   "version": "0.0.2",
   "description": "Everything you need to support a custom expression language",
-  "main": "src/index.js",
   "type": "module",
+  "main": "./dist/color.cjs",
+	"module": "./dist/color.js",
   "scripts": {
     "test": "htest test",
     "build:html": "npx @11ty/eleventy --config=_build/.eleventy.cjs",
