@@ -1,2 +1,10 @@
 node_modules
 local.js
+
+# Generated files
+**/*.html
+docs
+
+# Files only needed for the website
+assets
+**/*.njk

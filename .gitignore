@@ -3,6 +3,7 @@
 
 # Generated files
 dist
+docs
 **/*.html
 !test/index.html
 test/index.json
