@@ -7,7 +7,7 @@
   "scripts": {
     "test": "htest test",
     "build:html": "npx @11ty/eleventy --config=_build/.eleventy.cjs",
-    "build": "npm run build:html && npm run build:js",
+    "build": "npm run build:html && npm run build:js && npm run build:docs",
     "watch:html": "npx @11ty/eleventy --config=_build/.eleventy.cjs --watch",
     "watch": "npm run watch:html",
     "build:docs": "npx typedoc --out docs src/",
