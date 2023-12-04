@@ -25,7 +25,12 @@ export const serializers = {
 	"Compound": node => node.body.map(n => serialize(n, node)).join(", ")
 };
 
-
+/**
+ * Functions to transform each specific node type.
+ * Can be imported and overwritten by calling code.
+ * @type {Object.<string, Function>}
+ * 
+ */
 export const transformations = {};
 
 /**
@@ -53,3 +58,6 @@ export default function serialize (node) {
 
 	return serializers[node.type](node);
 }
+
+serialize.serializers = serializers;
+serialize.transformations = transformations;
