@@ -25,7 +25,10 @@ export const serializers = {
 	"Compound": node => node.body.map(n => serialize(n, node)).join(", ")
 };
 
-
+/**
+ * Transformations to apply to the AST before serializing, by node type.
+ * @type {Object.<string, Function>}
+ */
 export const transformations = {};
 
 /**
@@ -53,3 +56,6 @@ export default function serialize (node) {
 
 	return serializers[node.type](node);
 }
+
+serialize.serializers = serializers;
+serialize.transformations = transformations;
