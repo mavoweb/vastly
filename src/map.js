@@ -15,7 +15,7 @@ export default function map (node, callback, o) {
 }
 
 function _map (node, callback, o = {}, property, parent) {
-	let ignored = o.ignore && matches(node, o.ignore);
+	let ignored = o.except && matches(node, o.except);
 
 	if (!ignored && matches(node, o.only)) {
 		let ret = callback(node, property, parent);
