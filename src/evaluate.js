@@ -117,6 +117,8 @@ export default function evaluate (node, ...contexts) {
 	throw new TypeError(`Cannot evaluate node of type ${node.type}`);
 }
 
+evaluate.evaluators = evaluators;
+
 function resolve (property, ...contexts) {
 	let context = contexts.find(context => property in context);
 
