@@ -60,7 +60,10 @@ export const evaluators = {
 	"UnaryExpression": (node, ...contexts) => {
 		let operator = unaryOperators[node.operator];
 		if (!operator) {
-			throw new TypeError(`Unknown unary operator ${node.operator}`);
+			throw new TypeError(`Unknown unary operator ${node.operator}`, {
+				code: "UNKNOWN_UNARY_OPERATOR",
+				node,
+			});
 		}
 
 		return operator(evaluate(node.argument, ...contexts));
@@ -69,7 +72,10 @@ export const evaluators = {
 	"BinaryExpression": (node, ...contexts) => {
 		let operator = binaryOperators[node.operator];
 		if (!operator) {
-			throw new TypeError(`Unknown binary operator ${node.operator}`);
+			throw new TypeError(`Unknown binary operator ${node.operator}`, {
+				code: "UNKNOWN_BINARY_OPERATOR",
+				node,
+			});
 		}
 
 		return operator(evaluate(node.left, ...contexts), evaluate(node.right, ...contexts));
@@ -84,7 +90,11 @@ export const evaluators = {
 		let property = node.computed ? evaluate(node.property, ...contexts) : node.property.name;
 
 		if (!object) {
-			throw new TypeError(`Cannot read properties of ${object} (reading '${property}')`);
+			throw new TypeError(`Cannot read properties of ${object} (reading '${property}')`, {
+				code: "PROPERTY_REF_EMPTY_OBJECT",
+				node,
+				contexts,
+			});
 		}
 
 		return object[property];
@@ -114,7 +124,10 @@ export default function evaluate (node, ...contexts) {
 		return evaluators[node.type](node, ...contexts);
 	}
 
-	throw new TypeError(`Cannot evaluate node of type ${node.type}`);
+	throw new TypeError(`Cannot evaluate node of type ${node.type}`, {
+		code: "UNKNOWN_NODE_TYPE",
+		node,
+	});
 }
 
 evaluate.evaluators = evaluators;

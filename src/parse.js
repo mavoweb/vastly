@@ -9,7 +9,9 @@ import { setAll as setParents } from "./parents.js";
  */
 export default function parse (str, { parser = parse.defaultParser } = {}) {
 	if (!parser) {
-		throw new Error("No parser");
+		throw new Error("No parser found", {
+			code: "NO_PARSER",
+		});
 	}
 
 	let ast = parser(str);

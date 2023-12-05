@@ -41,6 +41,15 @@ export default function serialize (node) {
 		return node; // already serialized
 	}
 
+	if (!node.type) {
+		throw new TypeError(`AST node ${node} has no type`, {
+			cause: {
+				code: "NODE_MISSING_TYPE",
+				node,
+			}
+		});
+	}
+
 	let ret = transformations[node.type]?.(node) ?? node;
 
 	if (typeof ret == "object" && ret?.type) {
@@ -50,8 +59,13 @@ export default function serialize (node) {
 		return ret;
 	}
 
-	if (!node.type || !serializers[node.type]) {
-		throw new TypeError("Cannot understand this expression at all 😔");
+	if (!serializers[node.type]) {
+		throw new TypeError(`No serializer found for AST node with type '${ node.type }'`, {
+			cause: {
+				code: "UNKNOWN_NODE_TYPE",
+				node,
+			}
+		});
 	}
 
 	return serializers[node.type](node);
