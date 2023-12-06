@@ -22,6 +22,6 @@ export const childProperties = children.properties = [
 	"argument", // UnaryExpression
 	"elements", // ArrayExpression
 	"test", "consequent", "alternate", // ConditionalExpression
-	"object",  "property", // MemberExpression
+	"object", "property", // MemberExpression
 	"body"
 ];
