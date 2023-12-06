@@ -16,6 +16,10 @@ export default function map (node, callback, o) {
 }
 
 function _map (node, callback, o = {}, property, parent) {
+	if (Array.isArray(node)) {
+		return node.map(n => _map(n, callback, o, property, parent));
+	}
+
 	let ignore = o.except && matches(node, o.except);
 	let explore = !ignore && matches(node, o.only);
 	let ret;
