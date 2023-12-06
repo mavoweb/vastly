@@ -1,9 +1,10 @@
-import children from "./children.js";
+import { properties as childProperties } from "./children.js";
 import { matches } from "./util.js";
 
 /**
  * Recursively execute a callback on this node and all its children.
- * If the callback returns a non-undefined value, it will overwrite the node.
+ * If the callback returns a non-undefined value, it will overwrite the node,
+ * otherwise it will return a shallow clone.
  * @param {object} node
  * @param {function(object, string, object?)} callback
  * @param {object} [o]
@@ -15,21 +16,24 @@ export default function map (node, callback, o) {
 }
 
 function _map (node, callback, o = {}, property, parent) {
-	let ignored = o.except && matches(node, o.except);
+	let ignore = o.except && matches(node, o.except);
+	let explore = !ignore && matches(node, o.only);
+	let ret;
 
-	if (!ignored && matches(node, o.only)) {
-		let ret = callback(node, property, parent);
-
-		for (let child of children(node)) {
-			_map(child, callback, o, property, node);
-		}
-
-		if (ret !== undefined && parent) {
-			// Callback returned a value, overwrite the node
-			// We apply such transformations after walking, to avoid infinite recursion
-			parent[property] = ret;
-		}
-
-		return ret;
+	if (explore) {
+		ret = callback(node, property, parent);
 	}
+
+	// Shallow clone if no function, or if the function returned undefined
+	// If the function returned a value, we assume it takes care of this
+	node = ret !== undefined ? ret : {...node};
+
+	if (explore) {
+		let properties = childProperties[node.type] ?? [];
+		for (let prop of properties) {
+			node[prop] = _map(node[prop], callback, o, prop, node);
+		}
+	}
+
+	return ret;
 }
