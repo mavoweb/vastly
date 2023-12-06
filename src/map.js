@@ -39,5 +39,5 @@ function _map (node, callback, o = {}, property, parent) {
 		}
 	}
 
-	return ret;
+	return node;
 }

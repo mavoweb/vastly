@@ -8,8 +8,8 @@ export default function children (node) {
 		return node.flatMap(node => children(node));
 	}
 
-	let properties = childProperties[node.type] ?? [];
-	return properties.flatMap(property => node[property] ?? []);
+	let nodeProperties = properties[node.type] ?? [];
+	return nodeProperties.flatMap(property => node[property]);
 }
 
 /**
@@ -28,4 +28,4 @@ export const properties = children.properties = {
 };
 
 // Old JSEP versions
-childProperties.LogicalExpression = childProperties.BinaryExpression;
+properties.LogicalExpression = properties.BinaryExpression;
