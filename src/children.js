@@ -11,6 +11,13 @@ export default function children(node) {
 	return childProperties.flatMap(property => node[property] ?? []);
 }
 
+export function childrenWithProperty(node) {
+	return childProperties.filter(property => node[property]).map(property => ({
+		child: node[property],
+		parentProperty: property
+	}));
+}
+
 /**
  * Which properties of a node are child nodes?
  * Can be imported and manipulated by calling code to extend the walker
