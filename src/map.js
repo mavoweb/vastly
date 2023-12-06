@@ -1,9 +1,10 @@
-import { childProperties } from "./children.js";
+import { properties as childProperties } from "./children.js";
 import { matches } from "./util.js";
 
 /**
  * Recursively execute a callback on this node and all its children.
- * If the callback returns a non-undefined value, it will overwrite the node.
+ * If the callback returns a non-undefined value, the new node will take that value,
+ * otherwise it will return a shallow clone of the original.
  * @param {object} node
  * @param {function(object, string, object?)} callback
  * @param {object} [o]
@@ -15,28 +16,23 @@ export default function map (node, callback, o) {
 }
 
 function _map (node, callback, o = {}, property, parent) {
-	const ignoreNode = o.except && matches(node, o.except);
-	const copiedNode = {...node};
+	if (Array.isArray(node)) {
+		return node.map(n => _map(n, callback, o, property, parent));
+	}
 
-	if (!ignoreNode && matches(node, o.only)) {
+	const ignore = o.except && matches(node, o.except);
+	const explore = !ignore && matches(node, o.only);
+	let copiedNode = {...node};
+
+	if (explore) {
 		const callbackResult = callback(node, property, parent);
-		const mappedNode = callbackResult ?? copiedNode;
+		copiedNode = callbackResult !== undefined ? callbackResult : copiedNode;
+		const properties = childProperties[copiedNode.type] ?? [];
 
-		for (const prop of getChildProperties(node)) {
-			const child = node[prop];
-			if (Array.isArray(child)) {
-				mappedNode[prop] = child.map(singleChild => _map(singleChild, callback, o, prop, mappedNode));
-			} else {
-				mappedNode[prop] = _map(child, callback, o, prop, mappedNode);
-			}
+		for (const prop of properties) {
+			copiedNode[prop] = _map(copiedNode[prop], callback, o, prop, copiedNode);
 		}
-
-		return mappedNode;
 	}
 
 	return copiedNode;
-}
-
-function getChildProperties (node) {
-	return childProperties.filter(property => node[property]);
 }
