@@ -1,4 +1,4 @@
-import { childrenWithProperty } from "./children.js";
+import { childProperties } from "./children.js";
 import { matches } from "./util.js";
 
 /**
@@ -22,22 +22,21 @@ function _map (node, callback, o = {}, property, parent) {
 		const callbackResult = callback(node, property, parent);
 		const mappedNode = callbackResult ?? copiedNode;
 
-		for (const {child, parentProperty} of childrenWithProperty(node)) {
+		for (const prop of getChildProperties(node)) {
+			const child = node[prop];
 			if (Array.isArray(child)) {
-				mappedNode[parentProperty] = child.map(singleChild => _map(singleChild, callback, o, parentProperty, mappedNode));
+				mappedNode[prop] = child.map(singleChild => _map(singleChild, callback, o, prop, mappedNode));
 			} else {
-				mappedNode[parentProperty] = _map(child, callback, o, parentProperty, mappedNode);
+				mappedNode[prop] = _map(child, callback, o, prop, mappedNode);
 			}
-		}
-
-		if (callbackResult !== undefined && parent) {
-			// Callback returned a value, overwrite the node
-			// We apply such transformations after walking, to avoid infinite recursion
-			parent[property] = mappedNode;
 		}
 
 		return mappedNode;
 	}
 
 	return copiedNode;
+}
+
+function getChildProperties (node) {
+	return childProperties.filter(property => node[property]);
 }
