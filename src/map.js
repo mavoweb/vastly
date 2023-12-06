@@ -5,7 +5,7 @@ import { matches } from "./util.js";
  * Recursively execute a callback on this node and all its children.
  * If the callback returns a non-undefined value, it will overwrite the node,
  * otherwise it will return a shallow clone.
- * @param {object} node
+ * @param {object | object[]} node AST node or array of nodes
  * @param {function(object, string, object?)} callback
  * @param {object} [o]
  * @param {string | string[] | function} [o.only] Only walk nodes of this type
