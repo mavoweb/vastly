@@ -22,7 +22,6 @@ export default {
 					if (node.type === "Identifier" && node.name !== "foo") {
 						return {...node, name: "foo"};
 					}
-					return undefined;
 				}
 			],
 			expect: ["foo.bar + foo.bar.baz",  "foo.foo + foo.foo.foo"]
