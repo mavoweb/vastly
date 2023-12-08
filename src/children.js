@@ -9,7 +9,7 @@ export default function children (node) {
 	}
 
 	let nodeProperties = properties[node.type] ?? [];
-	return nodeProperties.flatMap(property => node[property]);
+	return nodeProperties.flatMap(property => node[property] ?? []);
 }
 
 /**
