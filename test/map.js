@@ -6,10 +6,10 @@ export default {
 	name: "map()",
 	run (str, ...args) {
 		const ast = jsep(str);
-        const mappedAst = map(ast, ...args);
-        return [serialize(ast), serialize(mappedAst)];
+		const mappedAst = map(ast, ...args);
+		return [serialize(ast), serialize(mappedAst)];
 	},
-    // Tests expect an array of the form [serialized input AST, expected output AST]
+	// Tests expect an array of the form [serialized input AST, expected output AST]
 	// This is to ensure the original AST was not mutated during mapping.
 	tests: [
 		{
