@@ -9,7 +9,8 @@ export default {
         const mappedAst = map(ast, ...args);
         return [serialize(ast), serialize(mappedAst)];
 	},
-    // Simple tests, these should be expanded some day
+    // Tests expect an array of the form [serialized input AST, expected output AST]
+	// This is to ensure the original AST was not mutated during mapping.
 	tests: [
 		{
 			args: ["foo + bar + baz", () => undefined],
