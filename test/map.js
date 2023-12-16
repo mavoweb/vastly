@@ -26,6 +26,19 @@ export default {
 				}
 			],
 			expect: ["foo.bar + foo.bar.baz",  "foo.foo + foo.foo.foo"]
+		},
+		{
+			args: [
+				"foo.bar + foo.bar.baz",
+				{
+					Identifier: (node) => {
+						if (node.name !== "foo") {
+							return {...node, name: "foo"};
+						}
+					}
+				}
+			],
+			expect: ["foo.bar + foo.bar.baz",  "foo.foo + foo.foo.foo"]
 		}
 	]
 }

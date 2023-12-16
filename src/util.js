@@ -15,3 +15,16 @@ export function matches(node, filter) {
 	// Coerce to string, if we're here we have no other way to compare
 	return node.type == filter;
 }
+
+export function makeCallback(transformer) {
+	if (typeof transformer === "function") {
+		return transformer;
+	} else if (typeof transformer === "object") {
+		return (node, property, parent) => {
+			if (transformer[node.type]) {
+				return transformer[node.type](node, property, parent);
+			}
+		};
+	}
+	return () => undefined;
+}

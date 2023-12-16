@@ -1,5 +1,5 @@
 import { properties as childProperties } from "./children.js";
-import { matches } from "./util.js";
+import { matches, makeCallback } from "./util.js";
 
 
 /**
@@ -7,22 +7,13 @@ import { matches } from "./util.js";
  * If the callback returns a non-undefined value, it will overwrite the node.
  * 
  * @param {object | object[]} node AST node or array of nodes
- * @param {Object.<string, function> | function(object, string, object?)} transformer
+ * @param {Object.<string, function> | function(object, string, object?)} transformCallback
  * @param {object} [o]
  * @param {string | string[] | function} [o.only] Only walk nodes of this type
  * @param {string | string[] | function} [o.except] Ignore walking nodes of these types
  */
-export default function transform (node, transformer, o) {
-	let callback;
-	if (typeof transformer === "function") {
-		callback = transformer;
-	} else {
-		callback = (node, property, parent) => {
-			if (transformer[node.type]) {
-				return transformer[node.type](node, property, parent);
-			}
-		};
-	}
+export default function transform (node, transformCallback, o) {
+	const callback = makeCallback(transformCallback);
 	_transform(node, callback, o);
 }
 
