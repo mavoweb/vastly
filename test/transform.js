@@ -16,6 +16,13 @@ export default {
 		},
 		{
 			args: [
+				"foo",
+				(node) => ({type: "Literal", value: `"${node.name}"`, raw: `"${node.name}"`})
+			],
+			expect: `"foo"`
+		},
+		{
+			args: [
 				"foo.bar + foo.bar.baz",
 				(node) => {
 					if (node.type === "Identifier" && node.name !== "foo") {
@@ -24,6 +31,18 @@ export default {
 				}
 			],
 			expect: "foo.foo + foo.foo.foo"
+		},
+		// rewrite of different node type
+		{
+			args: [
+				"foo + bar * baz",
+				(node) => {
+					if (node.type === "BinaryExpression" && node.operator === "*") {
+						return {name: "prod", type: "Identifier"};
+					}
+				}
+			],
+			expect: "foo + prod"
 		}
 	]
 }

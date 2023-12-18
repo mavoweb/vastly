@@ -18,7 +18,7 @@ export default function transform (node, transformCallback, o) {
 
 function _transform (node, callback, o = {}, property, parent) {
 	if (Array.isArray(node)) {
-		return node.map(n => _transform(n, callback, o, property, parent));
+		return node.forEach(n => _transform(n, callback, o, property, parent));
 	}
 
 	const ignore = o.except && matches(node, o.except);
@@ -26,14 +26,15 @@ function _transform (node, callback, o = {}, property, parent) {
 	
 	if (explore) {
 		const transformedNode = callback(node, property, parent);
-		node = transformedNode !== undefined ? transformedNode : node;
+		if (transformedNode !== undefined) {
+			// delete all keys in node:
+			Object.keys(node).forEach(key => delete node[key]);
+			// copy all keys from transformedNode to node:
+			Object.assign(node, transformedNode);
+		}
 		const properties = childProperties[node.type] ?? [];
 		for (const prop of properties) {
-			node[prop] = _transform(node[prop], callback, o, prop, node);
+			_transform(node[prop], callback, o, prop, node);
 		}
-
-		return node;
 	}
-
-	return node;
 }
