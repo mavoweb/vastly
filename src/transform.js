@@ -5,6 +5,7 @@ import { matches } from "./util.js";
 /**
  * Recursively execute a callback on this node and all its children.
  * If the callback returns a non-undefined value, it will overwrite the node.
+ * This function will not modify the root node of the input AST.
  * 
  * @param {object | object[]} node AST node or array of nodes
  * @param {function(object, string, object?)} transformCallback
@@ -18,7 +19,7 @@ export default function transform (node, transformCallback, o) {
 
 function _transform (node, callback, o = {}, property, parent) {
 	if (Array.isArray(node)) {
-		return node.forEach(n => _transform(n, callback, o, property, parent));
+		return node.map(n => _transform(n, callback, o, property, parent));
 	}
 
 	const ignore = o.except && matches(node, o.except);
@@ -26,15 +27,15 @@ function _transform (node, callback, o = {}, property, parent) {
 	
 	if (explore) {
 		const transformedNode = callback(node, property, parent);
-		if (transformedNode !== undefined) {
-			// delete all keys in node:
-			Object.keys(node).forEach(key => delete node[key]);
-			// copy all keys from transformedNode to node:
-			Object.assign(node, transformedNode);
+		if (transformedNode && node.parent) {
+			transformedNode.parent = node.parent;
 		}
+		node = transformedNode !== undefined ? transformedNode : node;
 		const properties = childProperties[node.type] ?? [];
 		for (const prop of properties) {
-			_transform(node[prop], callback, o, prop, node);
+			node[prop] = _transform(node[prop], callback, o, prop, node);
 		}
 	}
+
+	return node;
 }

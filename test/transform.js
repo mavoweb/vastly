@@ -18,10 +18,10 @@ export default {
 		{
 			args: [
 				"foo",
-				(node) => ({type: "Literal", value: `"${node.name}"`, raw: `"${node.name}"`}),
+				(node) => ({...node, name: "bar"}),
 			],
-			expect: `"foo"`,
-			description: "Rewrite single node"
+			expect: `foo`,
+			description: "Does not modify root node"
 		},
 		{
 			args: [
