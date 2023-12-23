@@ -12,14 +12,16 @@ export default {
 	tests: [
 		{
 			args: ["foo + bar + baz", () => undefined],
-			expect: "foo + bar + baz"
+			expect: "foo + bar + baz",
+			description: "Empty transform"
 		},
 		{
 			args: [
 				"foo",
-				(node) => ({type: "Literal", value: `"${node.name}"`, raw: `"${node.name}"`})
+				(node) => ({type: "Literal", value: `"${node.name}"`, raw: `"${node.name}"`}),
 			],
-			expect: `"foo"`
+			expect: `"foo"`,
+			description: "Rewrite single node"
 		},
 		{
 			args: [
@@ -30,9 +32,9 @@ export default {
 					}
 				}
 			],
-			expect: "foo.foo + foo.foo.foo"
+			expect: "foo.foo + foo.foo.foo",
+			description: "Rewrite tree of size > 1"
 		},
-		// rewrite of different node type
 		{
 			args: [
 				"foo + bar * baz",
@@ -42,7 +44,8 @@ export default {
 					}
 				}
 			],
-			expect: "foo + prod"
+			expect: "foo + prod",
+			description: "Rewrite to different node type"
 		}
 	]
 }
