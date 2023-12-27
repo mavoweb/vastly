@@ -48,4 +48,4 @@ export default {
 			description: "Rewrite to different node type"
 		}
 	]
-}
+};
