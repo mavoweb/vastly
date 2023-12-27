@@ -14,7 +14,7 @@ export const serializers = {
 	},
 	"ConditionalExpression": node => `${serialize(node.test, node)} ? ${serialize(node.consequent, node)} : ${serialize(node.alternate, node)}`,
 	"MemberExpression": node => {
-		let property = node.computed? `[${serialize(node.property, node)}]` : `.${node.property.name}`;
+		let property = node.computed ? `[${serialize(node.property, node)}]` : `.${node.property.name}`;
 		let object = serialize(node.object, node);
 		return `${object}${property}`;
 	},

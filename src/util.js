@@ -1,4 +1,4 @@
-export function matches(node, filter) {
+export function matches (node, filter) {
 	if (!filter) {
 		return true;
 	}

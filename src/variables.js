@@ -3,10 +3,10 @@
  * @param {object} node the AST node to traverse
  * @returns a list of all top-level identifiers
  */
-export default function variables(node) {
-	switch(node.type) {
+export default function variables (node) {
+	switch (node.type) {
 		case "Literal":
-			return []
+			return [];
 		case "UnaryExpression":
 			return variables(node.argument);
 		case "BinaryExpression":

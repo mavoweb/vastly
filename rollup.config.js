@@ -1,7 +1,7 @@
 const BASE_FILENAME = "vastly";
 const IIFE_NAME = "Vastly";
 
-function bundle(format, filenameAddition = "") {
+function bundle (format, filenameAddition = "") {
 	let filename = BASE_FILENAME;
 
 	if (format !== "esm" && filenameAddition) {
