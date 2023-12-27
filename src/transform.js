@@ -12,9 +12,10 @@ import * as parents from "./parents.js";
  * @param {object} [o]
  * @param {string | string[] | function} [o.only] Only walk nodes of this type
  * @param {string | string[] | function} [o.except] Ignore walking nodes of these types
+ * @returns {object | object[]} The callback's return value on the root node(s) of the input AST, or the root node(s) if the callback did not return a value
  */
 export default function transform (node, transformCallback, o) {
-	_transform(node, transformCallback, o);
+	return _transform(node, transformCallback, o);
 }
 
 function _transform (node, callback, o = {}, property, parent) {
