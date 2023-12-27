@@ -41,3 +41,12 @@ export function set (node, parent, { force } = {}) {
 		});
 	}
 }
+
+/**
+ * Get the parent node of a node.
+ * @param {object} node
+ * @returns {object | undefined} The parent node, or undefined if the node has no parent
+ */
+export function get (node) {
+	return node.parent;
+}
