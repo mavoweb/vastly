@@ -4,4 +4,4 @@ let tests = await Promise.all(index.map(name => import(`./${name}.js`).then(modu
 export default {
 	name: "All vASTly tests",
 	tests
-}
+};

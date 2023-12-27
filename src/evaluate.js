@@ -111,7 +111,7 @@ export const evaluators = {
 	"Identifier": (node, ...contexts) => resolve(node.name, ...contexts),
 	"Literal": node => node.value,
 	"ThisExpression": (node, ...contexts) => contexts[0],
-}
+};
 
 /**
  * Evaluate an AST node into a value.
