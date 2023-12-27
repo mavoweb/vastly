@@ -17,7 +17,7 @@ export default {
 			arg = jsep(arg);
 		}
 
-		return serialize(arg)
+		return serialize(arg);
 	},
 	tests: [
 		{
@@ -25,4 +25,4 @@ export default {
 			expect: ["1 + (foo * 2)", "1", "foo * 2", "foo", "2"]
 		}
 	]
-}
+};

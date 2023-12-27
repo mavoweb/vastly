@@ -28,4 +28,4 @@ export default {
 			expect: ["foo.bar + foo.bar.baz",  "foo.foo + foo.foo.foo"]
 		}
 	]
-}
+};

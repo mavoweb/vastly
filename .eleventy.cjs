@@ -1,6 +1,6 @@
 const markdownIt = require("markdown-it");
-const anchor = require('markdown-it-anchor')
-const pluginTOC = require('eleventy-plugin-toc');
+const anchor = require("markdown-it-anchor");
+const pluginTOC = require("eleventy-plugin-toc");
 const { globSync } = require("glob");
 
 module.exports = eleventyConfig => {
@@ -17,8 +17,8 @@ module.exports = eleventyConfig => {
 	eleventyConfig.setDataDeepMerge(true);
 
 	eleventyConfig.setLibrary("md", markdownIt({
-			html: true,
-		})
+		html: true,
+	})
 		.disable("code")
 		.use(anchor, {
 			permalink: anchor.permalink.headerLink()

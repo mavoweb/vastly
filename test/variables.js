@@ -169,4 +169,4 @@ export default {
 			expect: ["foo", "qux"]
 		}
 	]
-}
+};
