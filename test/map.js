@@ -14,7 +14,8 @@ export default {
 	tests: [
 		{
 			args: ["foo + bar + baz", () => undefined],
-			expect: ["foo + bar + baz", "foo + bar + baz"]
+			expect: ["foo + bar + baz", "foo + bar + baz"],
+			description: "Empty callback"
 		},
 		{
 			args: [
@@ -25,7 +26,20 @@ export default {
 					}
 				}
 			],
-			expect: ["foo.bar + foo.bar.baz",  "foo.foo + foo.foo.foo"]
+			expect: ["foo.bar + foo.bar.baz",  "foo.foo + foo.foo.foo"],
+			description: "Rewrite tree of size > 1"
+		},
+		{
+			args: [
+				"foo + bar * baz",
+				(node) => {
+					if (node.type === "BinaryExpression" && node.operator === "*") {
+						return {name: "prod", type: "Identifier"};
+					}
+				}
+			],
+			expect: ["foo + bar * baz", "foo + prod"],
+			description: "Rewrite to different node type"
 		}
 	]
 };

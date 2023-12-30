@@ -1,5 +1,4 @@
-import { properties as childProperties } from "./children.js";
-import { matches } from "./util.js";
+import transform from "./transform.js";
 
 /**
  * Recursively execute a callback on this node and all its children.
@@ -12,32 +11,9 @@ import { matches } from "./util.js";
  * @param {string | string[] | function} [o.except] Ignore walking nodes of these types
  */
 export default function map (node, callback, o) {
-	return _map(node, callback, o);
-}
-
-function _map (node, callback, o = {}, property, parent) {
-	if (Array.isArray(node)) {
-		return node.map(n => _map(n, callback, o, property, parent));
+	function mapCallback (node, property, parent) {
+		const ret = callback(node, property, parent);
+		return ret !== undefined ? ret : {...node};
 	}
-
-	let ignore = o.except && matches(node, o.except);
-	let explore = !ignore && matches(node, o.only);
-	let ret;
-
-	if (explore) {
-		ret = callback(node, property, parent);
-	}
-
-	// Shallow clone if no function, or if the function returned undefined
-	// If the function returned a value, we assume it takes care of this
-	node = ret !== undefined ? ret : {...node};
-
-	if (explore) {
-		let properties = childProperties[node.type] ?? [];
-		for (let prop of properties) {
-			node[prop] = _map(node[prop], callback, o, prop, node);
-		}
-	}
-
-	return node;
+	return transform(node, mapCallback, o);
 }
