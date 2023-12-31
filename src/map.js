@@ -11,9 +11,12 @@ import transform from "./transform.js";
  * @param {string | string[] | function} [o.except] Ignore walking nodes of these types
  */
 export default function map (node, callback, o) {
-	function mapCallback (node, property, parent) {
-		const ret = callback(node, property, parent);
-		return ret !== undefined ? ret : {...node};
-	}
-	return transform(node, mapCallback, o);
+	return transform(
+		node,
+		(node, property, parent) => {
+			const ret = callback(node, property,parent);
+			return ret !== undefined ? ret : {...node};
+		},
+		o
+	)
 }
