@@ -40,6 +40,20 @@ export default {
 			],
 			expect: ["foo + bar * baz", "foo + prod"],
 			description: "Rewrite to different node type"
+		},
+		{
+			args: [
+				"foo.bar + foo.bar.baz",
+				{
+					Identifier: (node) => {
+						if (node.name !== "foo") {
+							return {...node, name: "foo"};
+						}
+					}
+				}
+			],
+			expect: ["foo.bar + foo.bar.baz", "foo.foo + foo.foo.foo"],
+			description: "Use object literal spec"
 		}
 	]
 };
