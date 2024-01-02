@@ -19,5 +19,5 @@ export default function map (node, mapCallback, o) {
 			return ret !== undefined ? ret : {...node};
 		},
 		o
-	)
+	);
 }
