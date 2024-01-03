@@ -8,14 +8,14 @@ import * as parents from "./parents.js";
  * This function will not modify the root node of the input AST.
  *
  * @param {object | object[]} node AST node or array of nodes
- * @param {Object.<string, function> | function(object, string, object?)} transformCallback A map of node types to callbacks, or a single callback that will be called for all node types
+ * @param {Object.<string, function> | function(object, string, object?)} transformation A map of node types to callbacks, or a single callback that will be called for all node types
  * @param {object} [o]
  * @param {string | string[] | function} [o.only] Only walk nodes of this type
  * @param {string | string[] | function} [o.except] Ignore walking nodes of these types
  * @returns {object | object[]} The callback's return value on the root node(s) of the input AST, or the root node(s) if the callback did not return a value
  */
-export default function transform (node, transformCallback, o) {
-	const callback = getTransformMapCallback(transformCallback);
+export default function transform (node, transformation, o) {
+	const callback = getTransformMapCallback(transformation);
 	return _transform(node, callback, o);
 }
 
