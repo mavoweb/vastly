@@ -8,48 +8,67 @@ import * as parents from "./parents.js";
  * This function will not modify the root node of the input AST.
  *
  * @param {object | object[]} node AST node or array of nodes
- * @param {Object.<string, function> | function(object, string, object?)} transformation A map of node types to callbacks, or a single callback that will be called for all node types
+ * @param {Object.<string, function> | function(object, string, object?) | (Object.<string, function> | function(object, string, object?))[]} transformations A map of node types to callbacks, or a single callback that will be called for all node types, or a list of either, which will be applied in order
  * @param {object} [o]
  * @param {string | string[] | function} [o.only] Only walk nodes of this type
  * @param {string | string[] | function} [o.except] Ignore walking nodes of these types
  * @returns {object | object[]} The callback's return value on the root node(s) of the input AST, or the root node(s) if the callback did not return a value
  */
-export default function transform (node, transformation, o) {
-	const callback = getTransformMapCallback(transformation);
-	return _transform(node, callback, o);
+export default function transform (node, transformations, o) {
+	const callbacks = getTransformMapCallbackArray(transformations);
+	return _transform(node, callbacks, o);
 }
 
-function _transform (node, callback, o = {}, property, parent) {
+function _transform (node, callbacks, o = {}, property, parent) {
 	if (Array.isArray(node)) {
-		return node.map(n => _transform(n, callback, o, property, parent));
+		return node.map(n => _transform(n, callbacks, o, property, parent));
 	}
 
 	const ignore = o.except && matches(node, o.except);
 	const explore = !ignore && matches(node, o.only);
 
 	if (explore) {
-		const transformedNode = callback(node, property, parent);
-		node = transformedNode !== undefined ? transformedNode : node;
+		let transformedNode = node;
+		for (const callback of callbacks) {
+			transformedNode = callback(transformedNode, property, parent, node);
+			if (transformedNode === undefined) {
+				transformedNode = node;
+			}
+		}
+		node = transformedNode;
 		parents.set(node, parent, {force: true});
 		const properties = childProperties[node.type] ?? [];
 		for (const prop of properties) {
-			node[prop] = _transform(node[prop], callback, o, prop, node);
+			node[prop] = _transform(node[prop], callbacks, o, prop, node);
 		}
 	}
 
 	return node;
 }
 
-export function getTransformMapCallback (cb) {
-	if (typeof cb === "function") {
-		return cb;
+export function getTransformMapCallbackArray (cb) {
+	const callbacks = [];
+	if (Array.isArray(cb)) {
+		for (const c of cb) {
+			callbacks.push(...getTransformMapCallbackArray(c));
+		}
+	}
+	else if (typeof cb === "function") {
+		callbacks.push(cb);
 	}
 	else if (typeof cb === "object") {
-		return (node, property, parent) => {
-			if (cb[node.type]) {
-				return cb[node.type](node, property, parent);
+		callbacks.push(
+			(node, property, parent) => {
+				if (cb[node.type]) {
+					return cb[node.type](node, property, parent);
+				}
 			}
-		};
+		);
 	}
-	return () => undefined;
+	else {
+		callbacks.push(
+			() => undefined
+		);
+	}
+	return callbacks;
 }
