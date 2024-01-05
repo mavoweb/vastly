@@ -8,7 +8,7 @@ import * as parents from "./parents.js";
  * This function will not modify the root node of the input AST.
  *
  * @param {object | object[]} node AST node or array of nodes
- * @param {Object.<string, function> | function(object, string, object?) | (Object.<string, function> | function(object, string, object?))[]} transformations A map of node types to callbacks, or a single callback that will be called for all node types, or a list of either, which will be applied in order
+ * @param {Object.<string, function> | function(object, string, object?, object) | (Object.<string, function> | function(object, string, object?, object))[]} transformations A map of node types to callbacks, or a single callback that will be called for all node types, or a list of either, which will be applied in order
  * @param {object} [o]
  * @param {string | string[] | function} [o.only] Only walk nodes of this type
  * @param {string | string[] | function} [o.except] Ignore walking nodes of these types
