@@ -30,7 +30,8 @@ function _transform (node, transformation, o = {}, property, parent) {
 		let transformedNode;
 		if (typeof transformation === "function") {
 			transformedNode = transformation(node, property, parent);
-		} else if (typeof transformation === "object") {
+		}
+		else if (typeof transformation === "object") {
 			transformedNode = transformation[node.type]?.(node, property, parent);
 		}
 		node = transformedNode !== undefined ? transformedNode : node;

@@ -14,9 +14,9 @@ export default function map (node, callback, o) {
 	return transform(
 		node,
 		(node, property, parent) => {
-			const ret = callback(node, property,parent);
+			const ret = callback(node, property, parent);
 			return ret !== undefined ? ret : {...node};
 		},
 		o
-	)
+	);
 }
