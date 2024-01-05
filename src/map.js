@@ -11,11 +11,7 @@ import transform from "./transform.js";
  * @param {string | string[] | function} [o.except] Ignore walking nodes of these types
  */
 export default function map (node, mappings, o) {
-	if (!Array.isArray(mappings)) {
-		mappings = [mappings];
-	}
-	mappings.push(
-		(node, property, parent, originalNode) => node === originalNode ? {...node} : node
-	);
+	const cloneFn = (node, property, parent, originalNode) => node === originalNode ? {...node} : node;
+	mappings = [mappings, cloneFn].flat();
 	return transform(node, mappings, o);
 }
