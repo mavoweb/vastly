@@ -32,12 +32,8 @@ function _transform (node, transformations, o = {}, property, parent) {
 	if (explore) {
 		let transformedNode = node;
 		for (const transformation of transformations) {
-			if (typeof transformation === "function") {
-				transformedNode = transformation(transformedNode, property, parent);
-			}
-			else if (typeof transformation === "object") {
-				transformedNode = transformation[transformedNode.type]?.(transformedNode, property, parent);
-			}
+			const callback = typeof transformation === "object" ? transformation[transformedNode.type] : transformation;
+			transformedNode = callback?.(transformedNode, property, parent, node);
 
 			if (transformedNode === undefined) {
 				transformedNode = node;
