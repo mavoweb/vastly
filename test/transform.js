@@ -60,6 +60,27 @@ export default {
 			],
 			expect: "foo.foo + foo.foo.foo",
 			description: "Use object literal spec"
+		},
+		{
+			args: [
+				"foo + bar * baz",
+				[
+					(node) => {
+						if (node.type === "BinaryExpression" && node.operator === "*") {
+							return {name: "prod", type: "Identifier"};
+						}
+					},
+					{
+						Identifier: (node) => {
+							if (node.name !== "foo") {
+								return {...node, name: "foo"};
+							}
+						}
+					},
+				]
+			],
+			expect: "foo + foo",
+			description: "Use array of callbacks"
 		}
 	]
 };
