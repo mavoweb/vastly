@@ -26,15 +26,9 @@ export const serializers = {
 };
 
 /**
- * Transformations to apply to the AST before serializing, by node type.
- * @type {Object.<string, Function>}
- */
-export const transformations = {};
-
-/**
  * Recursively serialize an AST node into a JS expression
  * @param {*} node
- * @returns
+ * @returns {string} Serialized expression
  */
 export default function serialize (node) {
 	if (!node || typeof node === "string") {
@@ -50,15 +44,6 @@ export default function serialize (node) {
 		});
 	}
 
-	let ret = transformations[node.type]?.(node) ?? node;
-
-	if (typeof ret == "object" && ret?.type) {
-		node = ret;
-	}
-	else if (ret !== undefined) {
-		return ret;
-	}
-
 	if (!serializers[node.type]) {
 		throw new TypeError(`No serializer found for AST node with type '${ node.type }'`, {
 			cause: {
@@ -72,4 +57,3 @@ export default function serialize (node) {
 }
 
 serialize.serializers = serializers;
-serialize.transformations = transformations;
