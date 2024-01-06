@@ -1,21 +1,27 @@
 import jsep from "../node_modules/jsep/dist/jsep.min.js";
-import map from "../src/map.js";
+import transform from "../src/transform.js";
 import serialize from "../src/serialize.js";
 
 export default {
-	name: "map()",
+	name: "transform()",
 	run (str, ...args) {
 		const ast = jsep(str);
-		const mappedAst = map(ast, ...args);
-		return [serialize(ast), serialize(mappedAst)];
+		transform(ast, ...args);
+		return serialize(ast);
 	},
-	// Tests expect an array of the form [serialized input AST, expected output AST]
-	// This is to ensure the original AST was not mutated during mapping.
 	tests: [
 		{
 			args: ["foo + bar + baz", () => undefined],
-			expect: ["foo + bar + baz", "foo + bar + baz"],
-			description: "Empty callback"
+			expect: "foo + bar + baz",
+			description: "Empty transform"
+		},
+		{
+			args: [
+				"foo",
+				(node) => ({...node, name: "bar"}),
+			],
+			expect: `foo`,
+			description: "Does not modify root node"
 		},
 		{
 			args: [
@@ -26,7 +32,7 @@ export default {
 					}
 				}
 			],
-			expect: ["foo.bar + foo.bar.baz",  "foo.foo + foo.foo.foo"],
+			expect: "foo.foo + foo.foo.foo",
 			description: "Rewrite tree of size > 1"
 		},
 		{
@@ -38,8 +44,22 @@ export default {
 					}
 				}
 			],
-			expect: ["foo + bar * baz", "foo + prod"],
+			expect: "foo + prod",
 			description: "Rewrite to different node type"
+		},
+		{
+			args: [
+				"foo.bar + foo.bar.baz",
+				{
+					Identifier: (node) => {
+						if (node.name !== "foo") {
+							return {...node, name: "foo"};
+						}
+					}
+				}
+			],
+			expect: "foo.foo + foo.foo.foo",
+			description: "Use object literal spec"
 		},
 		{
 			args: [
@@ -59,7 +79,7 @@ export default {
 					},
 				]
 			],
-			expect: ["foo + bar * baz", "foo + foo"],
+			expect: "foo + foo",
 			description: "Use array of callbacks"
 		}
 	]

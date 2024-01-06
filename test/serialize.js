@@ -18,4 +18,4 @@ export default {
 			expect: "foo.bar.baz()"
 		}
 	]
-}
+};
