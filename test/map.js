@@ -40,6 +40,27 @@ export default {
 			],
 			expect: ["foo + bar * baz", "foo + prod"],
 			description: "Rewrite to different node type"
+		},
+		{
+			args: [
+				"foo + bar * baz",
+				[
+					(node) => {
+						if (node.type === "BinaryExpression" && node.operator === "*") {
+							return {name: "prod", type: "Identifier"};
+						}
+					},
+					{
+						Identifier: (node) => {
+							if (node.name !== "foo") {
+								return {...node, name: "foo"};
+							}
+						}
+					},
+				]
+			],
+			expect: ["foo + bar * baz", "foo + foo"],
+			description: "Use array of callbacks"
 		}
 	]
 };
