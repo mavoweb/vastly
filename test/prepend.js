@@ -27,14 +27,54 @@ export default {
 			description: "Identifier and call expression"
 		},
 		{
-			args: ["(foo + bar)", "baz()"],
-			expect: "(foo + bar).baz()",
-			description: "Binary expression and call expression"
+			args: ["foo[bar].baz", "foo.bar[baz]"],
+			expect: "foo[bar].baz.foo.bar[baz]",
+			description: "Complex member expressions"
 		},
 		{
 			args: ["foo", "5"],
 			expect: "foo[5]",
 			description: "Identifier and literal"
+		},
+		{
+			args: ["foo", "bar.baz", {computed: true}],
+			expect: "foo[bar.baz]",
+			description: "Identifier and member expression, computed"
+		},
+		{
+			args: ["foo.bar", "baz", {computed: true}],
+			expect: "foo.bar[baz]",
+			description: "Member expression and identifier, computed"
+		},
+		{
+			args: ["foo.bar", "baz.qux", {computed: true}],
+			expect: "foo.bar[baz.qux]",
+			description: "Member expression and member expression, computed"
+		},
+		{
+			args: ["foo.bar", "baz()"],
+			expect: "foo.bar.baz()",
+			description: "Member expression and call expression"
+		},
+		{
+			args: ["foo.bar", "baz()", {computed: true}],
+			expect: "foo.bar[baz()]",
+			description: "Member expression and call expression, computed"
+		},
+		{
+			args: ["foo.bar", "baz.qux()"],
+			expect: "foo.bar.baz.qux()",
+			description: "Member expression and call expression"
+		},
+		{
+			args: ["foo.bar", "baz.qux()", {computed: true}],
+			expect: "foo.bar[baz.qux()]",
+			description: "Member expression and call expression, computed"
+		},
+		{
+			args: ["foo.bar", "baz[qux]"],
+			expect: "foo.bar.baz[qux]",
+			description: "Member expression and member expression, computed"
 		}
 	]
 };

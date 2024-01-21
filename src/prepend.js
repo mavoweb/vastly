@@ -8,18 +8,13 @@ import * as parents from "./parents.js";
  * @param {boolean} [o.computed] Whether to use computed syntax (e.g. `foo[bar]`) or dot syntax (e.g. `foo.bar`)
  */
 export default function prepend (object, property, o = {}) {
-	if (typeof object === "string") {
-		object = stringToIdentifier(object);
-	}
-	if (typeof property === "string") {
-		property = stringToIdentifier(property);
-	}
-	// if o.computed is set or if property cannot be used with dot syntax, use computed syntax.
-	// types that are safe with dot syntax: Identifier, ThisExpression, CallExpression, and MemberExpressions with object.type === "Identifier"
-	const computed = o.computed || !["Identifier", "ThisExpression"].includes(property.type) || (property.type === "MemberExpression" && property.object.type === "Identifier");
+	object = convertToNode(object);
+	property = convertToNode(property);
+
+	const computed = o.computed || !isValidDotSyntax(property);
 	let node;
 	// complex case for CallExpressions
-	if (property.type === "CallExpression") {
+	if (property.type === "CallExpression" && !computed) {
 		const {callee, arguments: args} = property;
 		node = {
 			type: "CallExpression",
@@ -27,30 +22,44 @@ export default function prepend (object, property, o = {}) {
 			callee: prepend(object, callee),
 		};
 	}
+	else if (property.type === "MemberExpression" && !computed) {
+		// if the property is a MemberExpression, we need to prepend the object to the object of the MemberExpression
+		node = {
+			...property,
+			object: prepend(object, property.object)
+		};
+	}
 	else {
 		node = {
 			type: "MemberExpression",
 			computed,
 			object,
-			property,
+			property
 		};
 	}
-	// check for parents
-	if (parents.get(object) !== undefined) {
-		parents.set(object, node, {force: true});
-	}
-
-	if (parents.get(property) !== undefined) {
-		parents.set(property, node, {force: true});
-	}
+	// check for parents here!
 
 	return node;
 }
 
+function isValidDotSyntax (node) {
+	const type = node.type;
+	if (["Identifier", "ThisExpression", "CallExpression"].includes(type)) {
+		return true;
+	}
+	if (type === "MemberExpression") {
+		return isValidDotSyntax(node.object);
+	}
+	return false;
+}
 
-function stringToIdentifier (str) {
-	return {
-		type: "Identifier",
-		name: str
-	};
+
+function convertToNode (node) {
+	if (typeof node === "string") {
+		return {
+			type: "Identifier",
+			name: str
+		};
+	}
+	return node;
 }
