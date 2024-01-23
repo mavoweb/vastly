@@ -1,4 +1,5 @@
 import * as parents from "./parents.js";
+import {properties} from "./children.js";
 
 /**
  * Create a new MemberExpression node by combining an object and property
@@ -8,6 +9,23 @@ import * as parents from "./parents.js";
  * @param {boolean} [o.computed] Whether to use computed syntax (e.g. `foo[bar]`) or dot syntax (e.g. `foo.bar`)
  */
 export default function prepend (object, property, o = {}) {
+	const prependedNode = _prepend(object, property, o);
+	// check for parent
+	const parent = parents.get(property);
+	if (parent) {
+		for (const prop of properties[parent.type]) {
+			if (parent[prop] === property) {
+				parent[prop] = prependedNode;
+			}
+		}
+	}
+	
+	return prependedNode;
+}
+
+
+
+function _prepend (object, property, o = {}) {
 	object = convertToNode(object);
 	property = convertToNode(property);
 
@@ -19,14 +37,14 @@ export default function prepend (object, property, o = {}) {
 		node = {
 			type: "CallExpression",
 			arguments: args,
-			callee: prepend(object, callee),
+			callee: _prepend(object, callee),
 		};
 	}
 	else if (property.type === "MemberExpression" && !computed) {
 		// if the property is a MemberExpression, we need to prepend the object to the object of the MemberExpression
 		node = {
 			...property,
-			object: prepend(object, property.object)
+			object: _prepend(object, property.object)
 		};
 	}
 	else {
@@ -37,7 +55,6 @@ export default function prepend (object, property, o = {}) {
 			property
 		};
 	}
-	// check for parents here!
 
 	return node;
 }
