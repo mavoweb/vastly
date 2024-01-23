@@ -1,3 +1,5 @@
+import * as parents from "./parents.js";
+
 /**
  * Get a node’s children as an array
  * @param {object | object[]} node or nodes
@@ -29,3 +31,27 @@ export const properties = children.properties = {
 
 // Old JSEP versions
 properties.LogicalExpression = properties.BinaryExpression;
+
+/**
+ * Replace a child node with a new node by updating its parent
+ * @param {object} child the node to replace
+ * @param {object} newChild the replacement node
+ */
+export function replace (child, newChild) {
+	const parent = parents.get(child);
+	if (!parent) {
+		return;
+	}
+	const childProperties = properties[parent.type];
+	for (const prop of childProperties) {
+		if (parent[prop] === child) {
+			parent[prop] = newChild;
+		}
+		else if (Array.isArray(parent[prop])) {
+			const index = parent[prop].indexOf(child);
+			if (index !== -1) {
+				parent[prop][index] = newChild;
+			}
+		}
+	}
+}
