@@ -11,6 +11,7 @@ export default function path (ancestor, descendant) {
 	if (ancestor === descendant) {
 		return [];
 	}
+
 	// Case where ancestor is an array for an array expression or compound etc
 	if (Array.isArray(ancestor)) {
 		for (let i = 0; i < ancestor.length; i++) {
