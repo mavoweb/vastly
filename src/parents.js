@@ -1,5 +1,7 @@
 import walk from "./walk.js";
 
+const parentMap = new WeakMap();
+
 /**
  * Set properties on each node pointing to its parent node.
  * Required for many vastly functions, e.g. `closest()`.
@@ -28,17 +30,12 @@ export function setAll (node, options ) {
  * @param {boolean} [options.force] Allow overwriting
  */
 export function set (node, parent, { force } = {}) {
-	if (!force && "parent" in node) {
+	if (!force && parentMap.has(node)) {
 		// We assume that if the node already has a parent, its subtree will also have parents
 		return false;
 	}
 	else {
-		Object.defineProperty(node, "parent", {
-			value: parent,
-			enumerable: false,
-			configurable: true,
-			writable: true
-		});
+		parentMap.set(node, parent);
 	}
 }
 
@@ -48,5 +45,5 @@ export function set (node, parent, { force } = {}) {
  * @returns {object | undefined} The parent node, or undefined if the node has no parent
  */
 export function get (node) {
-	return node.parent;
+	return parentMap.get(node);
 }
