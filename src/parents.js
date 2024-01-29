@@ -34,9 +34,7 @@ export function set (node, parent, { force } = {}) {
 		// We assume that if the node already has a parent, its subtree will also have parents
 		return false;
 	}
-	else {
-		parentMap.set(node, parent);
-	}
+	parentMap.set(node, parent);
 }
 
 /**
