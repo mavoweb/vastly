@@ -7,23 +7,23 @@ parents.setAll(ast);
 export default {
 	name: "parents",
 	run (node) {
-		return parents.get(node);
+		return parents.getWithMetadata(node);
 	},
 	tests: [
 		{
 			name: "Root node",
 			args: [ast],
-			expect: undefined
+			expect: {parent: undefined}
 		},
 		{
 			name: "Non-root node",
 			args: [ast.right],
-			expect: ast
+			expect: {parent: ast, property: "right"}
 		},
 		{
 			name: "Leaf node",
 			args: [ast.right.arguments[0].object],
-			expect: ast.right.arguments[0]
+			expect: {parent: ast.right.arguments[0], property: "object"}
 		}
 	]
 };

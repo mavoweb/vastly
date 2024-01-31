@@ -1,4 +1,5 @@
 import walk from "./walk.js";
+import { properties } from "./children.js";
 
 const parentMap = new WeakMap();
 
@@ -34,7 +35,8 @@ export function set (node, parent, { force } = {}) {
 		// We assume that if the node already has a parent, its subtree will also have parents
 		return false;
 	}
-	parentMap.set(node, parent);
+	const metadata = findParentProp(node, parent);
+	parentMap.set(node, {parent, ...metadata});
 }
 
 /**
@@ -43,5 +45,34 @@ export function set (node, parent, { force } = {}) {
  * @returns {object | undefined} The parent node, or undefined if the node has no parent
  */
 export function get (node) {
+	const {parent} = parentMap.get(node) ?? {};
+	return parent;
+}
+
+/**
+ * Get the parent node and metadata for a node.
+ * @param {object} node
+ * @returns {object | undefined} An object containing the parent node and the property name of the child node in the parent
+ */
+export function getWithMetadata (node) {
 	return parentMap.get(node);
+}
+
+function findParentProp (node, parent) {
+	const parentProps = properties[parent?.type] ?? [];
+
+	for (const property of parentProps) {
+		const child = parent[property];
+		if (Array.isArray(child)) {
+			const index = child.indexOf(node);
+			if (index !== -1) {
+				return {property, index};
+			}
+		}
+		else if (child === node) {
+			return {property};
+		}
+	}
+
+	return {};
 }
