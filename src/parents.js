@@ -54,7 +54,7 @@ export function get (node) {
  * @param {object} node
  * @returns {object | undefined} An object containing the parent node and the property name of the child node in the parent
  */
-export function getWithMetadata (node) {
+export function getDetails (node) {
 	return parentMap.get(node);
 }
 

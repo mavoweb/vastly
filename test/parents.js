@@ -7,7 +7,7 @@ parents.setAll(ast);
 export default {
 	name: "parents",
 	run (node) {
-		return parents.getWithMetadata(node);
+		return parents.getDetails(node);
 	},
 	tests: [
 		{
