@@ -25,7 +25,7 @@ export default function transform (node, transformations, o) {
 
 function _transform (node, transformations, o = {}, property, parent) {
 	if (Array.isArray(node)) {
-		return node.map((n) => _transform(n, transformations, o, property, parent));
+		return node.map(n => _transform(n, transformations, o, property, parent));
 	}
 
 	const ignore = o.except && matches(node, o.except);
