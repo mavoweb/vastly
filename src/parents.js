@@ -14,15 +14,16 @@ const parentMap = new WeakMap();
  */
 export function setAll (node, options ) {
 	walk(node, (node, property, parent) => {
+		let ret;
 		try {
-			const ret = set(node, parent, options);
-			if (ret === false) {
-				// We assume that if the node already has a parent, its subtree will also have parents
-				return false;
-			}
+			ret = set(node, parent, options);
 		}
 		catch (e) {
 			throw new Error(`Could not set parent for node of type ${node.type} at ${property} in parent of type ${parent.type}`);
+		}
+		if (ret === false) {
+			// We assume that if the node already has a parent, its subtree will also have parents
+			return false;
 		}
 	});
 }
