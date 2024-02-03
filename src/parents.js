@@ -42,8 +42,8 @@ export function set (node, parent, { force } = {}) {
 	// Find the property name and index of the child node in the parent
 	for (const property of parentProps) {
 		const child = parent[property];
-		// If the child is an array, get the property and index
 		if (Array.isArray(child)) {
+			// When the child is an array, we also need to figure out index
 			const index = child.indexOf(node);
 			if (index !== -1) {
 				details = {property, index};
