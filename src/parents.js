@@ -78,7 +78,7 @@ export function set (node, parent, { force } = {}) {
 /**
  * Get the parent node of a node.
  * @param {object} node
- * @returns {object | undefined} The parent node, or undefined if the node has no parent
+ * @returns {object | null | undefined} The parent node, or undefined if the node's parent is unknown
  */
 export function get (node) {
 	const {parent} = parentMap.get(node) ?? {};
@@ -88,7 +88,7 @@ export function get (node) {
 /**
  * Get the parent node and metadata for a node.
  * @param {object} node
- * @returns {object | undefined} An object containing the parent node and the property name of the child node in the parent, or undefined if the node has no parent
+ * @returns {object | undefined} An object containing the parent node and the property name of the child node in the parent, or undefined if the node's parent is unknown
  */
 export function getDetails (node) {
 	return parentMap.get(node);
