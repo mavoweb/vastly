@@ -44,7 +44,7 @@ function _transform (node, transformations, o = {}, property, parent, index) {
 		if (parent) {
 			if (index !== undefined) {
 				parent[property][index] = node;
-			} 
+			}
 			else {
 				parent[property] = node;
 			}
