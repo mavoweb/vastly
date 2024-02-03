@@ -21,9 +21,9 @@ export default function transform (node, transformations, o) {
 	return _transform(node, transformations, o);
 }
 
-function _transform (node, transformations, o = {}, property, parent) {
+function _transform (node, transformations, o = {}, property, parent, index) {
 	if (Array.isArray(node)) {
-		return node.map(n => _transform(n, transformations, o, property, parent));
+		return node.map((n, i) => _transform(n, transformations, o, property, parent, i));
 	}
 
 	const ignore = o.except && matches(node, o.except);
@@ -41,7 +41,16 @@ function _transform (node, transformations, o = {}, property, parent) {
 		}
 		node = transformedNode;
 
-		parents.set(node, parent, {force: true});
+		if (parent) {
+			if (index !== undefined) {
+				parent[property][index] = node;
+			} 
+			else {
+				parent[property] = node;
+			}
+			parents.set(node, parent, {force: true});
+		}
+
 		const properties = childProperties[node.type] ?? [];
 		for (const prop of properties) {
 			node[prop] = _transform(node[prop], transformations, o, prop, node);

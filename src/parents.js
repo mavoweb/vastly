@@ -10,14 +10,19 @@ const parentMap = new WeakMap();
  * @param {*} node
  * @param {object} [options]
  * @param {boolean} [options.force] Overwrite existing `parent` properties
+ * @throws {Error} If one of the nodes is not found in its parent
  */
 export function setAll (node, options ) {
 	walk(node, (node, property, parent) => {
-		let ret = set(node, parent, options);
-
-		if (ret === false) {
-			// We assume that if the node already has a parent, its subtree will also have parents
-			return false;
+		try {
+			const ret = set(node, parent, options);
+			if (ret === false) {
+				// We assume that if the node already has a parent, its subtree will also have parents
+				return false;
+			}
+		}
+		catch (e) {
+			throw new Error(`Could not set parent for node of type ${node.type} at ${property} in parent of type ${parent.type}`);
 		}
 	});
 }
@@ -29,6 +34,7 @@ export function setAll (node, options ) {
  * @param {object} parent
  * @param {object} [options]
  * @param {boolean} [options.force] Allow overwriting
+ * @throws {Error} If the child node is not found in the parent
  */
 export function set (node, parent, { force } = {}) {
 	if (!force && parentMap.has(node)) {
@@ -36,7 +42,16 @@ export function set (node, parent, { force } = {}) {
 		return false;
 	}
 
-	let details = {};
+	if (parent === undefined) {
+		parentMap.delete(node);
+		return;
+	}
+
+	if (parent === null) {
+		parentMap.set(node, {parent});
+		return;
+	}
+
 	const parentProps = properties[parent?.type] ?? [];
 
 	// Find the property name and index of the child node in the parent
@@ -46,17 +61,17 @@ export function set (node, parent, { force } = {}) {
 			// When the child is an array, we also need to figure out index
 			const index = child.indexOf(node);
 			if (index !== -1) {
-				details = {property, index};
-				break;
+				parentMap.set(node, {parent, property, index});
+				return;
 			}
 		}
 		else if (child === node) {
-			details = {property};
-			break;
+			parentMap.set(node, {parent, property});
+			return;
 		}
 	}
 
-	parentMap.set(node, {parent, ...details});
+	throw new Error("Could not find child node in parent");
 }
 
 /**
@@ -72,7 +87,7 @@ export function get (node) {
 /**
  * Get the parent node and metadata for a node.
  * @param {object} node
- * @returns {object | undefined} An object containing the parent node and the property name of the child node in the parent
+ * @returns {object | undefined} An object containing the parent node and the property name of the child node in the parent, or undefined if the node has no parent
  */
 export function getDetails (node) {
 	return parentMap.get(node);
