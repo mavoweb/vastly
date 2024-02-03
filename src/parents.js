@@ -34,7 +34,7 @@ export function setAll (node, options ) {
  * @param {object} parent
  * @param {object} [options]
  * @param {boolean} [options.force] Allow overwriting
- * @throws {Error} If the child node is not found in the parent
+ * @throws {Error} If there is no way to get to the child node from the parent
  */
 export function set (node, parent, { force } = {}) {
 	if (!force && parentMap.has(node)) {
