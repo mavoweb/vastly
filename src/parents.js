@@ -71,7 +71,7 @@ export function set (node, parent, { force } = {}) {
 		}
 	}
 
-	throw new Error("Could not find child node in parent");
+	throw new Error("No path to child node from parent");
 }
 
 /**
