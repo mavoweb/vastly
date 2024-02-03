@@ -35,8 +35,28 @@ export function set (node, parent, { force } = {}) {
 		// We assume that if the node already has a parent, its subtree will also have parents
 		return false;
 	}
-	const metadata = findParentProp(node, parent);
-	parentMap.set(node, {parent, ...metadata});
+
+	let details = {};
+	const parentProps = properties[parent?.type] ?? [];
+
+	// Find the property name and index of the child node in the parent
+	for (const property of parentProps) {
+		const child = parent[property];
+		// If the child is an array, get the property and index
+		if (Array.isArray(child)) {
+			const index = child.indexOf(node);
+			if (index !== -1) {
+				details = {property, index};
+				break;
+			}
+		}
+		else if (child === node) {
+			details = {property};
+			break;
+		}
+	}
+
+	parentMap.set(node, {parent, ...details});
 }
 
 /**
@@ -56,23 +76,4 @@ export function get (node) {
  */
 export function getDetails (node) {
 	return parentMap.get(node);
-}
-
-function findParentProp (node, parent) {
-	const parentProps = properties[parent?.type] ?? [];
-
-	for (const property of parentProps) {
-		const child = parent[property];
-		if (Array.isArray(child)) {
-			const index = child.indexOf(node);
-			if (index !== -1) {
-				return {property, index};
-			}
-		}
-		else if (child === node) {
-			return {property};
-		}
-	}
-
-	return {};
 }
