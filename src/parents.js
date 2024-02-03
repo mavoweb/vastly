@@ -93,3 +93,22 @@ export function get (node) {
 export function getDetails (node) {
 	return parentMap.get(node);
 }
+
+/**
+ * Clear a node's parent.
+ * @param {object} node
+ * @returns {boolean} True if the node had a parent and it was removed, false if the node had no parent
+ */
+export function clear (node) {
+	return parentMap.delete(node);
+}
+
+/**
+ * Clear all parent references from a node and its descendants.
+ * @param {object} node
+ */
+export function clearAll (node) {
+	walk(node, (node) => {
+		clear(node);
+	});
+}
