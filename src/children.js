@@ -22,6 +22,7 @@ export function getDetails (node) {
 
 	for (const property of nodeProperties) {
 		const child = node[property];
+		// When the node is an array, we want to include the index in the result
 		if (Array.isArray(child)) {
 			children = children.concat(child.map((c, index) => ({node: c, property, index})));
 		}
