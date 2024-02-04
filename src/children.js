@@ -3,13 +3,33 @@
  * @param {object | object[]} node or nodes
  * @returns {object[]}
  */
-export default function children (node) {
+export function get (node) {
+	return getDetails(node).map(({node}) => node);
+}
+
+/**
+ * Get a node's children and the corresponding properties and indices
+ * @param {object | object[]} node or nodes
+ * @returns {object[]}
+ */
+export function getDetails (node) {
 	if (Array.isArray(node)) {
-		return node.flatMap(node => children(node));
+		return node.flatMap(node => getDetails(node));
 	}
 
-	let nodeProperties = properties[node.type] ?? [];
-	return nodeProperties.flatMap(property => node[property] ?? []);
+	const nodeProperties = properties[node.type] ?? [];
+	let children = [];
+
+	for (const property of nodeProperties) {
+		const child = node[property];
+		if (Array.isArray(child)) {
+			children = children.concat(child.map((c, index) => ({node: c, property, index})));
+		}
+		else {
+			children.push({node: child, property});
+		}
+	}
+	return children;
 }
 
 /**
@@ -17,7 +37,7 @@ export default function children (node) {
  * Can be imported and modified by calling code to add support for custom node types.
  * @type {Object.<string, Array<string>}
  */
-export const properties = children.properties = {
+export const properties = {
 	CallExpression: ["arguments", "callee"],
 	BinaryExpression: ["left", "right"],
 	UnaryExpression: ["argument"],
