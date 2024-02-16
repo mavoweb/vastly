@@ -6,7 +6,7 @@ const ast = jsep("1 + foo(bar.baz, 2)");
 export default {
 	name: "children",
 	run (node) {
-		return children.getDetails(node);
+		return children.getPaths(node);
 	},
 	tests: [
 		{

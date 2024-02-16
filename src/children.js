@@ -3,8 +3,8 @@
  * @param {object | object[]} node or nodes
  * @returns {object[]}
  */
-export function get (node) {
-	return getDetails(node).map(({node}) => node);
+export function of (node) {
+	return getPaths(node).map(({node}) => node);
 }
 
 /**
@@ -12,15 +12,16 @@ export function get (node) {
  * @param {object | object[]} node or nodes
  * @returns {object[]}
  */
-export function getDetails (node) {
+export function getPaths (node) {
 	if (Array.isArray(node)) {
-		return node.flatMap(node => getDetails(node));
+		// when node is an array, flatten to avoid nested arrays of children
+		return node.flatMap(node => getPaths(node));
 	}
 
-	const nodeProperties = properties[node.type] ?? [];
+	const childProperties = properties[node.type] ?? [];
 	let children = [];
 
-	for (const property of nodeProperties) {
+	for (const property of childProperties) {
 		const child = node[property];
 		// When the node is an array, we want to include the index in the result
 		if (Array.isArray(child)) {

@@ -25,7 +25,7 @@ function _walk (node, callback, o = {}, property, parent) {
 			return ret;
 		}
 
-		for (let child of children.get(node)) {
+		for (let child of children.of(node)) {
 			_walk(child, callback, o, property, node);
 		}
 	}
