@@ -3,8 +3,8 @@
  * @param {object | object[]} node or nodes
  * @returns {object[]}
  */
-export function of (node) {
-	return getPaths(node).map(({node}) => node);
+export default function children (node) {
+	return paths(node).map(({node}) => node);
 }
 
 /**
@@ -12,10 +12,10 @@ export function of (node) {
  * @param {object | object[]} node or nodes
  * @returns {object[]}
  */
-export function getPaths (node) {
+export function paths (node) {
 	if (Array.isArray(node)) {
 		// when node is an array, flatten to avoid nested arrays of children
-		return node.flatMap(node => getPaths(node));
+		return node.flatMap(node => paths(node));
 	}
 
 	const childProperties = properties[node.type] ?? [];
@@ -51,3 +51,4 @@ export const properties = {
 
 // Old JSEP versions
 properties.LogicalExpression = properties.BinaryExpression;
+export {children as of};

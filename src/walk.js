@@ -1,4 +1,4 @@
-import * as children from "./children.js";
+import children from "./children.js";
 import { matches } from "./util.js";
 
 /**
@@ -25,7 +25,7 @@ function _walk (node, callback, o = {}, property, parent) {
 			return ret;
 		}
 
-		for (let child of children.of(node)) {
+		for (let child of children(node)) {
 			_walk(child, callback, o, property, node);
 		}
 	}
