@@ -11,14 +11,19 @@ import {properties} from "./children.js";
 export default function prepend (object, property, o = {}) {
 	const prependedNode = _prepend(object, property, o);
 	// check for parent
-	const parent = parents.get(property);
-	if (parent) {
-		for (const prop of properties[parent.type]) {
-			if (parent[prop] === property) {
-				parent[prop] = prependedNode;
-			}
+	const parentPath = parents.path(property);
+	if (parentPath) {
+		const {property, index, node: parent} = parentPath;
+		// replace parent[property] or parent[property][index] with prependedNode
+		if (index !== undefined) {
+			parent[property][index] = prependedNode;
 		}
+		else {
+			parent[property] = prependedNode;
+		} 
 	}
+
+	parents.update(prependedNode, {force: true});
 	
 	return prependedNode;
 }
@@ -75,7 +80,7 @@ function convertToNode (node) {
 	if (typeof node === "string") {
 		return {
 			type: "Identifier",
-			name: str
+			name: node
 		};
 	}
 	return node;
