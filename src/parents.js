@@ -11,7 +11,8 @@ const parentMap = new WeakMap();
  * @param {boolean} [options.force] Overwrite existing `parent` properties
  */
 export function setAll (node, options ) {
-	walk(node, (node, property, parent) => {
+	walk(node, (node, parentPath) => {
+		let parent = parentPath?.node;
 		let ret = set(node, parent, options);
 
 		if (ret === false) {
