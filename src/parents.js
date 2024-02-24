@@ -36,12 +36,6 @@ export function set (node, parentPath, { force } = {}) {
 		return false;
 	}
 
-	if (parentPath === null) {
-		// Node is the AST root
-		parentMap.set(node, { node: null });
-		return;
-	}
-
 	parentMap.set(node, parentPath);
 }
 

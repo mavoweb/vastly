@@ -13,7 +13,7 @@ export default {
 		{
 			name: "Root node",
 			args: [ast],
-			expect: {node: null}
+			expect: null
 		},
 		{
 			name: "Non-root node",
