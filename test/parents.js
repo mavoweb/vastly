@@ -7,13 +7,13 @@ parents.setAll(ast);
 export default {
 	name: "parents",
 	run (node) {
-		return parents.getDetails(node);
+		return parents.path(node);
 	},
 	tests: [
 		{
 			name: "Root node",
 			args: [ast],
-			expect: undefined
+			expect: {parent: null}
 		},
 		{
 			name: "Non-root node",

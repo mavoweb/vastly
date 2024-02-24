@@ -4,12 +4,35 @@
  * @returns {object[]}
  */
 export default function children (node) {
+	return paths(node).map(({node}) => node);
+}
+
+/**
+ * Get a node's children and the corresponding properties and indices
+ * @param {object | object[]} node or nodes
+ * @returns {object[]}
+ */
+export function paths (node) {
 	if (Array.isArray(node)) {
-		return node.flatMap(node => children(node));
+		// when node is an array, flatten to avoid nested arrays of children
+		return node.flatMap(node => paths(node));
 	}
 
-	let nodeProperties = properties[node.type] ?? [];
-	return nodeProperties.flatMap(property => node[property] ?? []);
+	const childProperties = properties[node.type] ?? [];
+	let children = [];
+
+	for (const property of childProperties) {
+		const child = node[property];
+		// When the node is an array, we want to include the index in the result
+		if (Array.isArray(child)) {
+			console.log("isArray!")
+			children = children.concat(child.map((c, index) => ({node: c, property, index})));
+		}
+		else {
+			children.push({node: child, property});
+		}
+	}
+	return children;
 }
 
 /**
@@ -17,7 +40,7 @@ export default function children (node) {
  * Can be imported and modified by calling code to add support for custom node types.
  * @type {Object.<string, Array<string>}
  */
-export const properties = children.properties = {
+export const properties = {
 	CallExpression: ["arguments", "callee"],
 	BinaryExpression: ["left", "right"],
 	UnaryExpression: ["argument"],
@@ -29,3 +52,4 @@ export const properties = children.properties = {
 
 // Old JSEP versions
 properties.LogicalExpression = properties.BinaryExpression;
+export {children as of};

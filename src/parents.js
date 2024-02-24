@@ -1,5 +1,4 @@
 import walk from "./walk.js";
-import { properties } from "./children.js";
 
 const parentMap = new WeakMap();
 
@@ -12,15 +11,11 @@ const parentMap = new WeakMap();
  * @param {boolean} [options.force] Overwrite existing `parent` properties
  * @throws {Error} If one of the nodes is not found in its parent
  */
-export function setAll (node, options ) {
-	walk(node, (node, property, parent) => {
-		let ret;
-		try {
-			ret = set(node, parent, options);
-		}
-		catch (e) {
-			throw new Error(`Could not set parent for node of type ${node.type} at ${property} in parent of type ${parent.type}`);
-		}
+export function setAll (node, options) {
+	walk(node, (node, parentPath) => {
+		// Make sure to pass in null as the parentPath if the node is the root
+		let ret = set(node, parentPath ?? null, options);
+
 		if (ret === false) {
 			// We assume that if the node already has a parent, its subtree will also have parents
 			return false;
@@ -32,48 +27,25 @@ export function setAll (node, options ) {
  * Set the `parent` property on a node.
  * By default it will skip nodes that already have a `parent` property, but you can set force = true to prevent that.
  * @param {object} node
- * @param {object} parent
+ * @param {object | null} parentPath
  * @param {object} [options]
  * @param {boolean} [options.force] Allow overwriting
  * @throws {Error} If there is no way to get to the child node from the parent
  */
-export function set (node, parent, { force } = {}) {
+export function set (node, parentPath, { force } = {}) {
 	if (!force && parentMap.has(node)) {
 		// We assume that if the node already has a parent, its subtree will also have parents
+		console.log("aborting");
 		return false;
 	}
 
-	if (parent === undefined) {
-		parentMap.delete(node);
-		return;
-	}
-
-	if (parent === null) {
+	if (parentPath === null) {
 		// Node is the AST root
 		parentMap.set(node, { parent: null });
 		return;
 	}
 
-	const parentProps = properties[parent?.type] ?? [];
-
-	// Find the property name and index of the child node in the parent
-	for (const property of parentProps) {
-		const child = parent[property];
-		if (Array.isArray(child)) {
-			// When the child is an array, we also need to figure out index
-			const index = child.indexOf(node);
-			if (index !== -1) {
-				parentMap.set(node, {parent, property, index});
-				return;
-			}
-		}
-		else if (child === node) {
-			parentMap.set(node, {parent, property});
-			return;
-		}
-	}
-
-	throw new Error("No path to child node from parent");
+	parentMap.set(node, parentPath);
 }
 
 /**
@@ -91,8 +63,12 @@ export function get (node) {
  * @param {object} node
  * @returns {object | undefined} An object containing the parent node and the property name of the child node in the parent, or undefined if the node's parent is unknown
  */
-export function getDetails (node) {
-	return parentMap.get(node);
+export function path (node) {
+	const path = parentMap.get(node);
+	if (path.index === undefined) {
+		delete path.index;
+	}
+	return path;
 }
 
 /**
