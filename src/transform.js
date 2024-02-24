@@ -18,7 +18,10 @@ export default function transform (node, transformations, o) {
 	if (!Array.isArray(transformations)) {
 		transformations = [transformations];
 	}
-	return _transform(node, transformations, o);
+	parents.clearAll(node);
+	const transformedNode = _transform(node, transformations, o);
+	parents.update(transformedNode);
+	return transformedNode;
 }
 
 function _transform (node, transformations, o = {}, property, parent) {
@@ -41,7 +44,6 @@ function _transform (node, transformations, o = {}, property, parent) {
 		}
 		node = transformedNode;
 
-		parents.set(node, parent, {force: true});
 		const properties = childProperties[node.type] ?? [];
 		for (const prop of properties) {
 			node[prop] = _transform(node[prop], transformations, o, prop, node);

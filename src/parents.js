@@ -10,10 +10,10 @@ const parentMap = new WeakMap();
  * @param {object} [options]
  * @param {boolean} [options.force] Overwrite existing `parent` properties
  */
-export function setAll (node, options ) {
+export function update (node, options) {
 	walk(node, (node, parentPath) => {
-		let parent = parentPath?.node;
-		let ret = set(node, parent, options);
+		// Make sure to pass in null as the parentPath if the node is the root
+		let ret = set(node, parentPath ?? null, options);
 
 		if (ret === false) {
 			// We assume that if the node already has a parent, its subtree will also have parents
@@ -26,24 +26,35 @@ export function setAll (node, options ) {
  * Set the `parent` property on a node.
  * By default it will skip nodes that already have a `parent` property, but you can set force = true to prevent that.
  * @param {object} node
- * @param {object} parent
+ * @param {object | null} parentPath
  * @param {object} [options]
  * @param {boolean} [options.force] Allow overwriting
  */
-export function set (node, parent, { force } = {}) {
+export function set (node, parentPath, { force } = {}) {
 	if (!force && parentMap.has(node)) {
 		// We assume that if the node already has a parent, its subtree will also have parents
 		return false;
 	}
-	parentMap.set(node, parent);
+
+	parentMap.set(node, parentPath);
 }
 
 /**
  * Get the parent node of a node.
  * @param {object} node
- * @returns {object | undefined} The parent node, or undefined if the node has no parent
+ * @returns {object | null | undefined} The parent node, or undefined if the node's parent is unknown
  */
 export function get (node) {
+	const {parent} = parentMap.get(node) ?? {};
+	return parent;
+}
+
+/**
+ * Get the parent node and metadata for a node.
+ * @param {object} node
+ * @returns {object | undefined} An object containing the parent node and the property name of the child node in the parent, or undefined if the node's parent is unknown
+ */
+export function path (node) {
 	return parentMap.get(node);
 }
 
