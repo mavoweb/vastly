@@ -25,7 +25,6 @@ export function paths (node) {
 		const child = node[property];
 		// When the node is an array, we want to include the index in the result
 		if (Array.isArray(child)) {
-			console.log("isArray!")
 			children = children.concat(child.map((c, index) => ({node: c, property, index})));
 		}
 		else {
