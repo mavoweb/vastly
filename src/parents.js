@@ -35,13 +35,12 @@ export function setAll (node, options) {
 export function set (node, parentPath, { force } = {}) {
 	if (!force && parentMap.has(node)) {
 		// We assume that if the node already has a parent, its subtree will also have parents
-		console.log("aborting");
 		return false;
 	}
 
 	if (parentPath === null) {
 		// Node is the AST root
-		parentMap.set(node, { parent: null });
+		parentMap.set(node, { node: null });
 		return;
 	}
 
@@ -64,11 +63,7 @@ export function get (node) {
  * @returns {object | undefined} An object containing the parent node and the property name of the child node in the parent, or undefined if the node's parent is unknown
  */
 export function path (node) {
-	const path = parentMap.get(node);
-	if (path.index === undefined) {
-		delete path.index;
-	}
-	return path;
+	return parentMap.get(node);
 }
 
 /**

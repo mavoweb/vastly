@@ -13,17 +13,17 @@ export default {
 		{
 			name: "Root node",
 			args: [ast],
-			expect: {parent: null}
+			expect: {node: null}
 		},
 		{
 			name: "Non-root node",
 			args: [ast.right],
-			expect: {parent: ast, property: "right"}
+			expect: {node: ast, property: "right"}
 		},
 		{
 			name: "Leaf node",
 			args: [ast.right.arguments[0].object],
-			expect: {parent: ast.right.arguments[0], property: "object"}
+			expect: {node: ast.right.arguments[0], property: "object"}
 		}
 	]
 };
