@@ -9,9 +9,8 @@ const parentMap = new WeakMap();
  * @param {*} node
  * @param {object} [options]
  * @param {boolean} [options.force] Overwrite existing `parent` properties
- * @throws {Error} If one of the nodes is not found in its parent
  */
-export function setAll (node, options) {
+export function update (node, options) {
 	walk(node, (node, parentPath) => {
 		// Make sure to pass in null as the parentPath if the node is the root
 		let ret = set(node, parentPath ?? null, options);
@@ -30,7 +29,6 @@ export function setAll (node, options) {
  * @param {object | null} parentPath
  * @param {object} [options]
  * @param {boolean} [options.force] Allow overwriting
- * @throws {Error} If there is no way to get to the child node from the parent
  */
 export function set (node, parentPath, { force } = {}) {
 	if (!force && parentMap.has(node)) {

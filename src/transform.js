@@ -20,7 +20,7 @@ export default function transform (node, transformations, o) {
 	}
 	parents.clearAll(node);
 	const transformedNode = _transform(node, transformations, o);
-	parents.setAll(transformedNode);
+	parents.update(transformedNode);
 	return transformedNode;
 }
 
