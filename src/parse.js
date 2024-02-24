@@ -1,4 +1,4 @@
-import { setAll as setParents } from "./parents.js";
+import { update as setParents } from "./parents.js";
 
 /**
  * Parses an expression into an AST, sets parent references, and returns the AST
