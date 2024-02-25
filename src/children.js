@@ -1,3 +1,5 @@
+import * as parents from "./parents.js";
+
 /**
  * Get a node’s children as an array
  * @param {object | object[]} node or nodes
@@ -32,6 +34,28 @@ export function paths (node) {
 		}
 	}
 	return children;
+}
+
+/**
+ * Replaces a child node with a new node, and updates the parent node and parent pointers
+ * @param {object} child 
+ * @param {object} newChild 
+ */
+export function replace (child, newChild) {
+	const parentPath = parents.path(child);
+	if (parentPath) {
+		const {property, index, node: parent} = parentPath;
+		
+		if (index !== undefined) {
+			parent[property][index] = newChild;
+		}
+		else {
+			parent[property] = newChild;
+		} 
+
+		parents.clear(child);
+		parents.set(newChild, parentPath, {force: true});
+	}
 }
 
 /**
