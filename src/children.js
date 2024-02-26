@@ -38,24 +38,32 @@ export function paths (node) {
 
 /**
  * Replaces a child node with a new node, and updates the parent node and parent pointers
- * @param {object} child 
- * @param {object} newChild 
+ * @param {object} child
+ * @param {object} newChild
+ * @throws {Error} If the child node does not have a parent node set
  */
 export function replace (child, newChild) {
 	const parentPath = parents.path(child);
-	if (parentPath) {
-		const {property, index, node: parent} = parentPath;
-		
-		if (index !== undefined) {
-			parent[property][index] = newChild;
-		}
-		else {
-			parent[property] = newChild;
-		} 
-
-		parents.clear(child);
-		parents.set(newChild, parentPath, {force: true});
+	if (parentPath === undefined) {
+		throw new Error("The child node does not have a parent node set");
 	}
+
+	// A root node was passed in
+	if (parentPath === null) {
+		return;
+	}
+
+	const {property, index, node: parent} = parentPath;
+
+	if (index !== undefined) {
+		parent[property][index] = newChild;
+	}
+	else {
+		parent[property] = newChild;
+	}
+
+	parents.clear(child);
+	parents.set(newChild, parentPath, {force: true});
 }
 
 /**
