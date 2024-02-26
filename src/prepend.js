@@ -1,67 +1,51 @@
 import * as parents from "./parents.js";
-import {properties} from "./children.js";
+import * as children from "./children.js";
 
 /**
  * Create a new MemberExpression node by combining an object and property
- * @param {object | string} object
- * @param {object | string} property
+ * @param {object} node
+ * @param {object} prependee
  * @param {*} [o]
  * @param {boolean} [o.computed] Whether to use computed syntax (e.g. `foo[bar]`) or dot syntax (e.g. `foo.bar`)
  */
-export default function prepend (object, property, o = {}) {
-	const prependedNode = _prepend(object, property, o);
-	// check for parent
-	const parentPath = parents.path(property);
-	if (parentPath) {
-		const {property, index, node: parent} = parentPath;
-		// replace parent[property] or parent[property][index] with prependedNode
-		if (index !== undefined) {
-			parent[property][index] = prependedNode;
-		}
-		else {
-			parent[property] = prependedNode;
-		} 
-	}
-
+export default function prepend (node, prependee, o = {}) {
+	const prependedNode = _prepend(node, prependee, o);
+	children.replace(node, prependedNode);
 	parents.update(prependedNode, {force: true});
-	
 	return prependedNode;
 }
 
 
 
-function _prepend (object, property, o = {}) {
-	object = convertToNode(object);
-	property = convertToNode(property);
-
-	const computed = o.computed || !isValidDotSyntax(property);
-	let node;
+function _prepend (node, prependee, o = {}) {
+	const computed = o.computed || !isValidDotSyntax(node);
+	let prependedNode;
 	// complex case for CallExpressions
-	if (property.type === "CallExpression" && !computed) {
-		const {callee, arguments: args} = property;
-		node = {
+	if (node.type === "CallExpression" && !computed) {
+		const {callee, arguments: args} = node;
+		prependedNode = {
 			type: "CallExpression",
 			arguments: args,
-			callee: _prepend(object, callee),
+			callee: _prepend(callee, prependee),
 		};
 	}
-	else if (property.type === "MemberExpression" && !computed) {
+	else if (node.type === "MemberExpression" && !computed) {
 		// if the property is a MemberExpression, we need to prepend the object to the object of the MemberExpression
-		node = {
-			...property,
-			object: _prepend(object, property.object)
+		prependedNode = {
+			...node,
+			object: _prepend(node.object, prependee)
 		};
 	}
 	else {
-		node = {
+		prependedNode = {
 			type: "MemberExpression",
 			computed,
-			object,
-			property
+			object: prependee,
+			property: node
 		};
 	}
 
-	return node;
+	return prependedNode;
 }
 
 function isValidDotSyntax (node) {
@@ -73,15 +57,4 @@ function isValidDotSyntax (node) {
 		return isValidDotSyntax(node.object);
 	}
 	return false;
-}
-
-
-function convertToNode (node) {
-	if (typeof node === "string") {
-		return {
-			type: "Identifier",
-			name: node
-		};
-	}
-	return node;
 }
