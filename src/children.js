@@ -45,7 +45,7 @@ export function paths (node) {
 export function replace (child, newChild) {
 	const parentPath = parents.path(child);
 	if (parentPath === undefined) {
-		throw new Error("The child node does not have a parent node set");
+		throw new Error("Cannot replace a child node with no parent pointer. Call parents.set() on the node or parents.update() on an ancestor to add parent pointers to this node");
 	}
 
 	// A root node was passed in
