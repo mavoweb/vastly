@@ -41,6 +41,7 @@ export function paths (node) {
  * @param {object} child
  * @param {object} newChild
  * @throws {Error} If the child node does not have a parent node set
+ * @returns {object | null} The new child node or null if the child node was a root node
  */
 export function replace (child, newChild) {
 	const parentPath = parents.path(child);
