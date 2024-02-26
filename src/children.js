@@ -64,6 +64,7 @@ export function replace (child, newChild) {
 
 	parents.clear(child);
 	parents.set(newChild, parentPath, {force: true});
+	return newChild;
 }
 
 /**
