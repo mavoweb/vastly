@@ -1,3 +1,5 @@
+import * as parents from "./parents.js";
+
 /**
  * Get a node’s children as an array
  * @param {object | object[]} node or nodes
@@ -32,6 +34,39 @@ export function paths (node) {
 		}
 	}
 	return children;
+}
+
+/**
+ * Replaces a child node with a new node, and updates the parent node and parent pointers
+ * @param {object} child
+ * @param {object} newChild
+ * @throws {Error} If the child node does not have a parent node set
+ * @returns {object | null} The new child node or null if the child node was a root node
+ */
+export function replace (child, newChild) {
+	const parentPath = parents.path(child);
+	if (parentPath === undefined) {
+		throw new Error("Cannot replace a child node with no parent pointer. Call parents.set() on the node or parents.update() on an ancestor to add parent pointers to this node");
+	}
+
+	// A root node was passed in
+	if (parentPath === null) {
+		// TODO warn("Replacing a root node does change anything");
+		return null;
+	}
+
+	const {property, index, node: parent} = parentPath;
+
+	if (index !== undefined) {
+		parent[property][index] = newChild;
+	}
+	else {
+		parent[property] = newChild;
+	}
+
+	parents.clear(child);
+	parents.set(newChild, parentPath, {force: true});
+	return newChild;
 }
 
 /**
