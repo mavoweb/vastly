@@ -50,7 +50,8 @@ export function replace (child, newChild) {
 
 	// A root node was passed in
 	if (parentPath === null) {
-		return;
+		// TODO warn("Replacing a root node does change anything");
+		return null;
 	}
 
 	const {property, index, node: parent} = parentPath;
