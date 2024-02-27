@@ -30,7 +30,7 @@
   "bugs": {
     "url": "https://github.com/mavoweb/vastly/issues"
   },
-  "homepage": "https://github.com/mavoweb/vastly#readme",
+  "homepage": "https://vastly.mavo.io",
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",
     "@stylistic/eslint-plugin": "latest",
