@@ -7,6 +7,8 @@ import * as children from "./children.js";
  * @param {object} prependee
  * @param {*} [o]
  * @param {boolean} [o.computed] Whether to use computed syntax (e.g. `foo[bar]`) or dot syntax (e.g. `foo.bar`)
+ * @throws {Error} If the child node does not have a parent node set
+ * @returns {object} The new prepended node
  */
 export default function prepend(node, prependee, o = {}) {
 	const prependedNode = _prepend(node, prependee, o);
