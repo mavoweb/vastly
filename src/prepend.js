@@ -18,6 +18,7 @@ export default function prepend(node, prependee, o = {}) {
 }
 
 function _prepend(node, prependee, o = {}) {
+	// check if we use computed, e.g. foo[bar], or dot syntax, e.g. foo.bar
 	const computed = o.computed || !isValidDotSyntax(node);
 	let prependedNode;
 	// if the node is a CallExpression, we need to prepend to the callee
@@ -35,7 +36,9 @@ function _prepend(node, prependee, o = {}) {
 			...node,
 			object: _prepend(node.object, prependee),
 		};
-	} else {
+	}
+	// otherwise, we can just prepend to the node itself
+	else {
 		prependedNode = {
 			type: "MemberExpression",
 			computed,
@@ -53,6 +56,7 @@ function isValidDotSyntax(node) {
 	if (["Identifier", "ThisExpression", "CallExpression"].includes(type)) {
 		return true;
 	}
+	// walk up to top level MemberExpression to see if it's eligible
 	if (type === "MemberExpression") {
 		return isValidDotSyntax(node.object);
 	}
