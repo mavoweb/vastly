@@ -17,24 +17,23 @@ export default function prepend(node, prependee, o = {}) {
 	return prependedNode;
 }
 
+// properties to recursively descend into when prepending
+const descendTypes = {
+	CallExpression: "callee",
+	MemberExpression: "object",
+};
+
 function _prepend(node, prependee, o = {}) {
 	// check if we use computed, e.g. foo[bar], or dot syntax, e.g. foo.bar
 	const computed = o.computed || !isValidDotSyntax(node);
 	let prependedNode;
-	// if the node is a CallExpression, we need to prepend to the callee
-	if (node.type === "CallExpression" && !computed) {
-		const { callee, arguments: args } = node;
-		prependedNode = {
-			type: "CallExpression",
-			arguments: args,
-			callee: _prepend(callee, prependee),
-		};
-	}
-	// if the node is a MemberExpression, we need to prepend to the object of the MemberExpression
-	else if (node.type === "MemberExpression" && !computed) {
+
+	// we need to descend into the node to prepend
+	if (node.type in descendTypes && !computed) {
+		const descendProp = descendTypes[node.type];
 		prependedNode = {
 			...node,
-			object: _prepend(node.object, prependee),
+			[descendProp]: _prepend(node[descendProp], prependee),
 		};
 	}
 	// otherwise, we can just prepend to the node itself
