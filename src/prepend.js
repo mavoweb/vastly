@@ -5,13 +5,11 @@ import * as children from "./children.js";
  * Create a new MemberExpression node by combining an object and property
  * @param {object} node
  * @param {object} prependee
- * @param {*} [o]
- * @param {boolean} [o.computed] Whether to use computed syntax (e.g. `foo[bar]`) or dot syntax (e.g. `foo.bar`)
  * @throws {Error} If the child node does not have a parent node set
  * @returns {object} The new prepended node
  */
-export default function prepend(node, prependee, o = {}) {
-	const prependedNode = _prepend(node, prependee, o);
+export default function prepend(node, prependee) {
+	const prependedNode = _prepend(node, prependee);
 	children.replace(node, prependedNode);
 	parents.update(prependedNode, { force: true });
 	return prependedNode;
@@ -23,9 +21,9 @@ const descendTypes = {
 	MemberExpression: "object",
 };
 
-function _prepend(node, prependee, o = {}) {
+function _prepend(node, prependee) {
 	// check if we use computed, e.g. foo[bar], or dot syntax, e.g. foo.bar
-	const computed = o.computed || !isValidDotSyntax(node);
+	const computed = !isValidDotSyntax(node);
 	let prependedNode;
 
 	// we need to descend into the node to prepend

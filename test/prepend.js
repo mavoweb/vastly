@@ -3,91 +3,30 @@ import prepend from "../src/prepend.js";
 import serialize from "../src/serialize.js";
 import * as parents from "../src/parents.js";
 
+const nodes = [
+	{str: '"bar"', computed: true}, // Literal
+	{str: "foo", computed: false}, // Identifier
+	{str: "foo[5].bar", computed: false}, // MemberExpression
+	{str: "foo.bar()", computed: false}, // CallExpression
+	{str: "2 + 5", computed: true}, // BinaryExpression
+	{str: "!foo", computed: true}, // UnaryExpression
+	{str: "foo ? bar : baz", computed: true}, // ConditionalExpression
+];
+
+const pairs = nodes.flatMap(({str: prependee}) => nodes.map(({str: node, computed}) => [node, prependee, computed]));
+
 export default {
 	name: "prepend()",
-	run(node, prependee, ...args) {
+	run(node, prependee) {
 		node = jsep(node);
 		prependee = jsep(prependee);
 		parents.update(node);
 		parents.update(prependee);
-		const combined = prepend(node, prependee, ...args);
+		const combined = prepend(node, prependee);
 		return serialize(combined);
 	},
-	tests: [
-		{
-			args: ["bar", "foo"],
-			expect: "foo.bar",
-			description: "Two identifiers",
-		},
-		{
-			args: ["bar", "foo", { computed: true }],
-			expect: "foo[bar]",
-			description: "Two identifiers, computed",
-		},
-		{
-			args: ["bar()", "foo"],
-			expect: "foo.bar()",
-			description: "Identifier and call expression",
-		},
-		{
-			args: ["foo.bar[baz]", "foo[bar].baz"],
-			expect: "foo[bar].baz.foo.bar[baz]",
-			description: "Complex member expressions",
-		},
-		{
-			args: ["5", "foo"],
-			expect: "foo[5]",
-			description: "Identifier and literal",
-		},
-		{
-			args: ["5 + 12", "foo"],
-			expect: "foo[5 + 12]",
-			description: "Identifier and binary expression",
-		},
-		{
-			args: ["bar", "foo(a, b)"],
-			expect: "foo(a, b).bar",
-			description: "Call expression and identifier",
-		},
-		{
-			args: ["bar.baz", "foo", { computed: true }],
-			expect: "foo[bar.baz]",
-			description: "Identifier and member expression, computed",
-		},
-		{
-			args: ["baz", "foo.bar", { computed: true }],
-			expect: "foo.bar[baz]",
-			description: "Member expression and identifier, computed",
-		},
-		{
-			args: ["baz.qux", "foo.bar", { computed: true }],
-			expect: "foo.bar[baz.qux]",
-			description: "Member expression and member expression, computed",
-		},
-		{
-			args: ["baz()", "foo.bar"],
-			expect: "foo.bar.baz()",
-			description: "Member expression and call expression",
-		},
-		{
-			args: ["baz()", "foo.bar", { computed: true }],
-			expect: "foo.bar[baz()]",
-			description: "Member expression and call expression, computed",
-		},
-		{
-			args: ["baz.qux()", "foo.bar"],
-			expect: "foo.bar.baz.qux()",
-			description: "Member expression and call expression",
-		},
-		{
-			args: ["baz.qux()", "foo.bar", { computed: true }],
-			expect: "foo.bar[baz.qux()]",
-			description: "Member expression and call expression, computed",
-		},
-		{
-			args: ["baz[qux]", "foo.bar"],
-			expect: "foo.bar.baz[qux]",
-			description: "Member expression and member expression, computed",
-		},
-	],
+	tests: pairs.map(([node, prependee, computed]) => ({
+		args: [node, prependee],
+		expect: computed ? `${prependee}[${node}]` : `${prependee}.${node}`,
+	})),
 };
