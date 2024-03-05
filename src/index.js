@@ -7,4 +7,5 @@ export {default as map}         from "./map.js";
 export {default as serialize}   from "./serialize.js";
 export {default as walk}        from "./walk.js";
 export {default as variables}   from "./variables.js";
+export {default as prepend}     from "./prepend.js";
 export * as parents             from "./parents.js";
