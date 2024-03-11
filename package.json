@@ -1,6 +1,6 @@
 {
   "name": "vastly",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Everything you need to support a custom expression language",
   "type": "module",
   "main": "./dist/vastly.cjs",
