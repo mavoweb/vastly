@@ -1,6 +1,5 @@
-import { properties as childProperties } from "./children.js";
-import { matches } from "./util.js";
-import * as parents from "./parents.js";
+import "./treecle-setup.js";
+import treecleTransform from "../lib/treecle/src/transform.js";
 
 /**
  * Recursively execute a callback on this node and all its children.
@@ -18,37 +17,20 @@ export default function transform (node, transformations, o) {
 	if (!Array.isArray(transformations)) {
 		transformations = [transformations];
 	}
-	parents.clearAll(node);
-	const transformedNode = _transform(node, transformations, o);
-	parents.update(transformedNode);
-	return transformedNode;
-}
 
-function _transform (node, transformations, o = {}, property, parent) {
-	if (Array.isArray(node)) {
-		return node.map(n => _transform(n, transformations, o, property, parent));
+	// Treecle only accepts functions for transformations, convert any object with types to a function
+	transformations = transformations.map(t => typeof t === "object" ? n => t[n.type] : t);
+
+	// Convert string filters to functions for Treecle
+	o = Object.assign({}, o); // clone to avoid modifying the input object
+	if (typeof o.only === "string") {
+		let type = o.only;
+		o.only = n => n.type === type;
+	}
+	if (typeof o.except === "string") {
+		let type = o.except;
+		o.except = n => n.type === type;
 	}
 
-	const ignore = o.except && matches(node, o.except);
-	const explore = !ignore && matches(node, o.only);
-
-	if (explore) {
-		let transformedNode = node;
-		for (const transformation of transformations) {
-			const callback = typeof transformation === "object" ? transformation[transformedNode.type] : transformation;
-			transformedNode = callback?.(transformedNode, property, parent, node);
-
-			if (transformedNode === undefined) {
-				transformedNode = node;
-			}
-		}
-		node = transformedNode;
-
-		const properties = childProperties[node.type] ?? [];
-		for (const prop of properties) {
-			node[prop] = _transform(node[prop], transformations, o, prop, node);
-		}
-	}
-
-	return node;
+	return treecleTransform(node, transformations, o);
 }

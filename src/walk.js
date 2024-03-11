@@ -1,5 +1,5 @@
-import * as children from "./children.js";
-import { matches } from "./util.js";
+import "./treecle-setup.js";
+import treecleWalk from "../lib/treecle/src/walk.js";
 
 /**
  * Recursively execute a callback on this node and all its children.
@@ -11,23 +11,16 @@ import { matches } from "./util.js";
  * @param {string | string[] | function} [o.except] Ignore walking nodes of these types
  */
 export default function walk (node, callback, o) {
-	return _walk(node, callback, o);
-}
-
-function _walk (node, callback, o = {}, parentPath) {
-	let ignored = o.except && matches(node, o.except);
-
-	if (!ignored && matches(node, o.only)) {
-		let ret = callback(node, parentPath);
-
-		if (ret !== undefined) {
-			// Callback returned a value, stop walking and return it
-			return ret;
-		}
-
-		for (let childPath of children.paths(node)) {
-			const {node: child, property, index} = childPath;
-			_walk(child, callback, o, {node, property, index});
-		}
+	// Convert string filters to functions for Treecle
+	o = Object.assign({}, o); // clone to avoid modifying the input object
+	if (typeof o.only === "string") {
+		let type = o.only;
+		o.only = n => n.type === type;
 	}
+	if (typeof o.except === "string") {
+		let type = o.except;
+		o.except = n => n.type === type;
+	}
+
+	return treecleWalk(node, callback, o);
 }

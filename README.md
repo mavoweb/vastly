@@ -65,3 +65,9 @@ import * as vastly from "https://vastly.mavo.io/dist/vastly.js";
 [Full API reference](https://vastly.mavo.io/docs/)
 
 </main>
+
+<script type=module>
+// Create global variable to facilitate experimentation
+import * as vastly from "./src/index.js";
+globalThis.vastly = vastly;
+</script>

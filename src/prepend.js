@@ -1,4 +1,4 @@
-import * as parents from "./parents.js";
+import updateParents from "../lib/treecle/src/updateParents.js";
 import * as children from "./children.js";
 
 /**
@@ -11,7 +11,7 @@ import * as children from "./children.js";
 export default function prepend(node, prependee) {
 	const prependedNode = _prepend(node, prependee);
 	children.replace(node, prependedNode);
-	parents.update(prependedNode, { force: true });
+	updateParents(prependedNode, { force: true });
 	return prependedNode;
 }
 

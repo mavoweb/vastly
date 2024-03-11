@@ -10,7 +10,8 @@
     "build:html": "npx @11ty/eleventy --config=.eleventy.cjs",
     "build:docs": "npx typedoc --out docs src/",
     "build:js": "npx rollup -c",
-    "build": "npm run build:html && npm run build:js && npm run build:docs",
+    "build:lib": "node _build/lib.mjs",
+    "build": "npm run build:html && npm run build:lib && npm run build:js && npm run build:docs",
     "watch:html": "npx @11ty/eleventy --config=.eleventy.cjs --watch",
     "watch": "npm run watch:html",
     "lint": "eslint . --ext .js --ext .ts --ext .cjs --fix",
@@ -45,5 +46,8 @@
     "release-it": "^17.0.0",
     "rollup": "^2.79.1",
     "typedoc": "latest"
+  },
+  "dependencies": {
+    "treecle": "^0.0.2"
   }
 }
