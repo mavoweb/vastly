@@ -1,5 +1,5 @@
 import jsep from "../node_modules/jsep/dist/jsep.min.js";
-import find from "../src/find.js";
+import { find } from "../src/index.js";
 import serialize from "../src/serialize.js";
 
 export default {

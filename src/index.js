@@ -10,3 +10,5 @@ export {default as walk}        from "./walk.js";
 export {default as variables}   from "./variables.js";
 export {default as prepend}     from "./prepend.js";
 export * as parents             from "../lib/treecle/src/parents.js";
+export {default as transform}   from "./transform.js";
+export {default as updateParents} from "../lib/treecle/src/updateParents.js";
