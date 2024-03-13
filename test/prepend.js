@@ -1,7 +1,7 @@
 import jsep from "../node_modules/jsep/dist/jsep.min.js";
 import prepend from "../src/prepend.js";
 import serialize from "../src/serialize.js";
-import * as parents from "../src/parents.js";
+import updateParents from "../lib/treecle/src/updateParents.js";
 
 const nodes = [
 	{str: '"bar"', computed: true}, // Literal
@@ -17,11 +17,11 @@ const pairs = nodes.flatMap(({str: prependee}) => nodes.map(({str: node, compute
 
 export default {
 	name: "prepend()",
-	run(node, prependee) {
+	run (node, prependee) {
 		node = jsep(node);
 		prependee = jsep(prependee);
-		parents.update(node);
-		parents.update(prependee);
+		updateParents(node);
+		updateParents(prependee);
 		const combined = prepend(node, prependee);
 		return serialize(combined);
 	},
