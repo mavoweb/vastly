@@ -1,7 +1,7 @@
 import jsep from "../node_modules/jsep/dist/jsep.min.js";
 import prepend from "../src/prepend.js";
 import serialize from "../src/serialize.js";
-import updateParents from "../lib/treecle/src/updateParents.js";
+import { updateParents } from "../src/index.js";
 
 const nodes = [
 	{str: '"bar"', computed: true}, // Literal
