@@ -8,7 +8,7 @@ import * as children from "./children.js";
  * @throws {Error} If the child node does not have a parent node set
  * @returns {object} The new prepended node
  */
-export default function prepend(node, prependee) {
+export default function prepend (node, prependee) {
 	const prependedNode = _prepend(node, prependee);
 	children.replace(node, prependedNode);
 	updateParents(prependedNode, { force: true });
@@ -21,7 +21,7 @@ const descendTypes = {
 	MemberExpression: "object",
 };
 
-function _prepend(node, prependee) {
+function _prepend (node, prependee) {
 	// check if we use computed, e.g. foo[bar], or dot syntax, e.g. foo.bar
 	const computed = !isValidDotSyntax(node);
 	let prependedNode;
@@ -48,7 +48,7 @@ function _prepend(node, prependee) {
 }
 
 // checks if a node is a valid candidate for dot syntax
-function isValidDotSyntax(node) {
+function isValidDotSyntax (node) {
 	const type = node.type;
 	if (["Identifier", "ThisExpression", "CallExpression"].includes(type)) {
 		return true;

@@ -19,7 +19,7 @@ export default function transform (node, transformations, o) {
 	}
 
 	// Treecle only accepts functions for transformations, convert any object with types to a function
-	transformations = transformations.map(t => typeof t === "object" ? n => t[n.type] : t);
+	transformations = transformations.map(t => typeof t === "object" ? n => t[n.type]?.(n) : t);
 
 	// Convert string filters to functions for Treecle
 	o = Object.assign({}, o); // clone to avoid modifying the input object
