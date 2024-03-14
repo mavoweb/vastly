@@ -1,4 +1,4 @@
-import { update as setParents } from "./parents.js";
+import { update } from "./parents.js";
 
 /**
  * Parses an expression into an AST, sets parent references, and returns the AST
@@ -15,6 +15,6 @@ export default function parse (str, { parser = parse.defaultParser } = {}) {
 	}
 
 	let ast = parser(str);
-	setParents(ast);
+	update(ast);
 	return ast;
 }

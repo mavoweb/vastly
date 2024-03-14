@@ -1,5 +1,5 @@
 import updateParents from "../lib/treecle/src/updateParents.js";
-import * as children from "./children.js";
+import { replace } from "./children.js";
 
 /**
  * Create a new MemberExpression node by combining an object and property
@@ -10,7 +10,7 @@ import * as children from "./children.js";
  */
 export default function prepend (node, prependee) {
 	const prependedNode = _prepend(node, prependee);
-	children.replace(node, prependedNode);
+	replace(node, prependedNode);
 	updateParents(prependedNode, { force: true });
 	return prependedNode;
 }
